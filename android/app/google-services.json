@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "412126122862",
+    "project_id": "emival-engenharia-inventario",
+    "storage_bucket": "emival-engenharia-inventario.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:412126122862:android:b5dafabb424c99e4e2a77f",
+        "android_client_info": {
+          "package_name": "br.com.yellowtreesoftware.emivalInventario"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "412126122862-6b9i6rv61gi5paj4oov9np0vddjm4ull.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCaZi0MWXlF4HdD7EIzWDsW3w1enzq3VDw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "412126122862-6b9i6rv61gi5paj4oov9np0vddjm4ull.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "412126122862-5evk880r6o2hv8275n3revoiekuo12tk.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "br.com.yellowtreesoftware.emivalInventario"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
