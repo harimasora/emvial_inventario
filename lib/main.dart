@@ -1,3 +1,4 @@
+import 'package:drag_and_drop_lists/drag_and_drop_list_interface.dart';
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -13,10 +14,223 @@ Future<void> main() async {
   );
 }
 
-class MyApp extends StatelessWidget {
+final contentProvider = StateProvider<List<DragAndDropListInterface>>((ref) {
+  return [
+    DragAndDropList(
+      header: Column(
+        children: <Widget>[
+          Row(
+            children: [
+              Padding(
+                padding: EdgeInsets.only(left: 8, bottom: 4),
+                child: Text(
+                  'Park Way Quadra 26',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+      children: <DragAndDropItem>[
+        DragAndDropItem(
+          child: Row(
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                child: Text(
+                  'Marreta',
+                ),
+              ),
+            ],
+          ),
+        ),
+        DragAndDropItem(
+          child: Row(
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                child: Text(
+                  'Maquita',
+                ),
+              ),
+            ],
+          ),
+        ),
+        DragAndDropItem(
+          child: Row(
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                child: Text(
+                  'Nível laser',
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    ),
+    DragAndDropList(
+      header: Column(
+        children: <Widget>[
+          Row(
+            children: [
+              Padding(
+                padding: EdgeInsets.only(left: 8, bottom: 4),
+                child: Text(
+                  'Lago Sul QE 11',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+      children: <DragAndDropItem>[
+        DragAndDropItem(
+          child: Row(
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                child: Text(
+                  'Marreta',
+                ),
+              ),
+            ],
+          ),
+        ),
+        DragAndDropItem(
+          child: Row(
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                child: Text(
+                  'Britadeira',
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    ),
+    DragAndDropList(
+      header: Column(
+        children: <Widget>[
+          Row(
+            children: [
+              Padding(
+                padding: EdgeInsets.only(left: 8, bottom: 4),
+                child: Text(
+                  'Park Way Quadra 12',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+      children: <DragAndDropItem>[
+        DragAndDropItem(
+          child: Row(
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                child: Text(
+                  'Pá',
+                ),
+              ),
+            ],
+          ),
+        ),
+        DragAndDropItem(
+          child: Row(
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                child: Text(
+                  'Maquita',
+                ),
+              ),
+            ],
+          ),
+        ),
+        DragAndDropItem(
+          child: Row(
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                child: Text(
+                  'Marreta',
+                ),
+              ),
+            ],
+          ),
+        ),
+        DragAndDropItem(
+          child: Row(
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                child: Text(
+                  'Nível laser',
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    ),
+    DragAndDropList(
+      header: Column(
+        children: <Widget>[
+          Row(
+            children: [
+              Padding(
+                padding: EdgeInsets.only(left: 8, bottom: 4),
+                child: Text(
+                  'Lago Norte QI 5',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+      children: <DragAndDropItem>[
+        DragAndDropItem(
+          child: Row(
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                child: Text(
+                  'Marreta',
+                ),
+              ),
+            ],
+          ),
+        ),
+        DragAndDropItem(
+          child: Row(
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                child: Text(
+                  'Nível laser',
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    )
+  ];
+});
+
+class MyApp extends ConsumerWidget {
   // This widget is the root of your application.
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ScopedReader watch) {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -35,248 +249,33 @@ class MyApp extends StatelessWidget {
         // closer together (more dense) than on mobile platforms.
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: DragHandleExample(title: 'Flutter Demo Home Page'),
+      home: DragHandleExample(),
     );
   }
 }
 
-class DragHandleExample extends StatefulWidget {
-  const DragHandleExample({Key key, this.title}) : super(key: key);
-  final String title;
-
+class DragHandleExample extends ConsumerWidget {
   @override
-  _DragHandleExample createState() => _DragHandleExample();
-}
-
-class _DragHandleExample extends State<DragHandleExample> {
-  List<DragAndDropList> _contents;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _contents = [
-      DragAndDropList(
-        header: Column(
-          children: <Widget>[
-            Row(
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(left: 8, bottom: 4),
-                  child: Text(
-                    'Park Way Quadra 26',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-        children: <DragAndDropItem>[
-          DragAndDropItem(
-            child: Row(
-              children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                  child: Text(
-                    'Marreta',
-                  ),
-                ),
-              ],
-            ),
-          ),
-          DragAndDropItem(
-            child: Row(
-              children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                  child: Text(
-                    'Maquita',
-                  ),
-                ),
-              ],
-            ),
-          ),
-          DragAndDropItem(
-            child: Row(
-              children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                  child: Text(
-                    'Nível laser',
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-      DragAndDropList(
-        header: Column(
-          children: <Widget>[
-            Row(
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(left: 8, bottom: 4),
-                  child: Text(
-                    'Lago Sul QE 11',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-        children: <DragAndDropItem>[
-          DragAndDropItem(
-            child: Row(
-              children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                  child: Text(
-                    'Marreta',
-                  ),
-                ),
-              ],
-            ),
-          ),
-          DragAndDropItem(
-            child: Row(
-              children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                  child: Text(
-                    'Britadeira',
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-      DragAndDropList(
-        header: Column(
-          children: <Widget>[
-            Row(
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(left: 8, bottom: 4),
-                  child: Text(
-                    'Park Way Quadra 12',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-        children: <DragAndDropItem>[
-          DragAndDropItem(
-            child: Row(
-              children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                  child: Text(
-                    'Pá',
-                  ),
-                ),
-              ],
-            ),
-          ),
-          DragAndDropItem(
-            child: Row(
-              children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                  child: Text(
-                    'Maquita',
-                  ),
-                ),
-              ],
-            ),
-          ),
-          DragAndDropItem(
-            child: Row(
-              children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                  child: Text(
-                    'Marreta',
-                  ),
-                ),
-              ],
-            ),
-          ),
-          DragAndDropItem(
-            child: Row(
-              children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                  child: Text(
-                    'Nível laser',
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-      DragAndDropList(
-        header: Column(
-          children: <Widget>[
-            Row(
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(left: 8, bottom: 4),
-                  child: Text(
-                    'Lago Norte QI 5',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-        children: <DragAndDropItem>[
-          DragAndDropItem(
-            child: Row(
-              children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                  child: Text(
-                    'Marreta',
-                  ),
-                ),
-              ],
-            ),
-          ),
-          DragAndDropItem(
-            child: Row(
-              children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                  child: Text(
-                    'Nível laser',
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      )
-    ];
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ScopedReader watch) {
+    final content = watch(contentProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Inventário'),
       ),
       body: DragAndDropLists(
-        children: _contents,
-        onItemReorder: _onItemReorder,
-        onListReorder: _onListReorder,
+        children: content.state,
+        onItemReorder: (int oldItemIndex, int oldListIndex, int newItemIndex, int newListIndex) {
+          final contentCopy = List<DragAndDropListInterface>.from(content.state);
+          final movedItem = contentCopy[oldListIndex].children.removeAt(oldItemIndex);
+          contentCopy[newListIndex].children.insert(newItemIndex, movedItem);
+          content.state = contentCopy;
+        },
+        onListReorder: (int oldListIndex, int newListIndex) {
+          final contentCopy = List<DragAndDropListInterface>.from(content.state);
+          final movedList = contentCopy.removeAt(oldListIndex);
+          contentCopy.insert(newListIndex, movedList);
+          content.state = contentCopy;
+        },
         // listPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
         itemDivider: const Divider(),
         itemDecorationWhileDragging: BoxDecoration(
@@ -302,19 +301,5 @@ class _DragHandleExample extends State<DragHandleExample> {
         child: const Icon(Icons.add),
       ),
     );
-  }
-
-  void _onItemReorder(int oldItemIndex, int oldListIndex, int newItemIndex, int newListIndex) {
-    setState(() {
-      final movedItem = _contents[oldListIndex].children.removeAt(oldItemIndex);
-      _contents[newListIndex].children.insert(newItemIndex, movedItem);
-    });
-  }
-
-  void _onListReorder(int oldListIndex, int newListIndex) {
-    setState(() {
-      final movedList = _contents.removeAt(oldListIndex);
-      _contents.insert(newListIndex, movedList);
-    });
   }
 }
