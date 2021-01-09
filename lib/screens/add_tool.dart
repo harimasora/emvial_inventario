@@ -1,6 +1,7 @@
 import 'package:emival_inventario/models/item.dart';
 import 'package:emival_inventario/models/place.dart';
 import 'package:emival_inventario/services/db_service.dart';
+import 'package:emival_inventario/widgets/save_indicator_button.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 
@@ -14,7 +15,14 @@ class AddToolScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Adicionar Ferramenta'),
       ),
-      body: AddToolForm(places: places),
+      body: GestureDetector(
+        onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+        child: SafeArea(
+          child: SingleChildScrollView(
+            child: AddToolForm(places: places),
+          ),
+        ),
+      ),
     );
   }
 }
@@ -33,49 +41,63 @@ class _AddToolFormState extends State<AddToolForm> {
   String name;
   Place place;
 
+  bool _isLoading = false;
+  AutovalidateMode _autoValidate = AutovalidateMode.disabled;
+
+  void startLoading() => setState(() => _isLoading = true);
+  void finishLoading() => setState(() => _isLoading = false);
+
   @override
   Widget build(BuildContext context) {
+    final overtextStyle = Theme.of(context).textTheme.overline.copyWith(color: Theme.of(context).primaryColor);
     final List<Place> places = widget.places;
     places.sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
     return Form(
       key: _formKey,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          TextFormField(
-            decoration: const InputDecoration(
-              labelText: 'Nome da ferramenta',
+      autovalidateMode: _autoValidate,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Text('DADOS DA FERRAMENTA', style: overtextStyle),
+            TextFormField(
+              decoration: const InputDecoration(
+                labelText: 'Nome',
+              ),
+              onSaved: (String value) {
+                name = value;
+              },
+              textCapitalization: TextCapitalization.words,
+              validator: _validateName,
             ),
-            onSaved: (String value) {
-              name = value;
-            },
-            textCapitalization: TextCapitalization.words,
-            validator: _validateName,
-          ),
-          DropdownButtonFormField<Place>(
-            value: place,
-            items: places
-                .map((e) => DropdownMenuItem<Place>(
-                      value: e,
-                      child: Text(e.name),
-                    ))
-                .toList(),
-            onChanged: (Place value) {
-              setState(() {
-                place = value;
-              });
-            },
-            validator: _validatePlace,
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16.0),
-            child: ElevatedButton(
+            const SizedBox(height: 8),
+            DropdownButtonFormField<Place>(
+              decoration: const InputDecoration(
+                labelText: 'Local',
+              ),
+              value: place,
+              items: places
+                  .map((e) => DropdownMenuItem<Place>(
+                        value: e,
+                        child: Text(e.name),
+                      ))
+                  .toList(),
+              onChanged: (Place value) {
+                setState(() {
+                  place = value;
+                });
+              },
+              validator: _validatePlace,
+            ),
+            const SizedBox(height: 16),
+            SaveIndicatorButton(
+              isLoading: _isLoading,
               onPressed: _validateInputs,
-              child: const Text('Criar'),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -102,13 +124,18 @@ class _AddToolFormState extends State<AddToolForm> {
     if (form.validate()) {
       form.save();
       try {
+        startLoading();
         final db = context.read(databaseProvider);
         final placeToSave = Place(id: place.id, name: place.name, items: place.items)..items.add(Item(name: name));
         await db.savePlace(placeToSave);
         Navigator.of(context).pop();
       } on Exception catch (e) {
         debugPrint(e.toString());
-      } finally {}
+      } finally {
+        finishLoading();
+      }
+    } else {
+      setState(() => _autoValidate = AutovalidateMode.always);
     }
   }
 }
