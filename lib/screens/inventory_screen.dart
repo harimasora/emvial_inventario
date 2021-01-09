@@ -1,5 +1,6 @@
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:emival_inventario/models/place.dart';
+import 'package:emival_inventario/screens/edit_tool.dart';
 import 'package:emival_inventario/services/db_service.dart';
 import 'package:emival_inventario/widgets/radial_fab.dart';
 import 'package:flutter/material.dart';
@@ -72,7 +73,16 @@ class InventoryScreen extends ConsumerWidget {
                             caption: 'Editar',
                             color: Colors.black45,
                             icon: Icons.edit,
-                            onTap: () => _showSnackBar(context, 'More'),
+                            onTap: () {
+                              Navigator.of(context).push<dynamic>(
+                                MaterialPageRoute<dynamic>(
+                                  builder: (context) => EditToolScreen(
+                                      item: places.state[index].items[innerIndex],
+                                      place: places.state[index],
+                                      places: places.state),
+                                ),
+                              );
+                            },
                           ),
                           IconSlideAction(
                             caption: 'Apagar',
