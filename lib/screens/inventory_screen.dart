@@ -7,7 +7,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final placesProvider = StateProvider<List<Place>>((ref) {
   return ref.watch(inventoryStreamProvider).when(
-        data: (data) => data,
+        data: (data) {
+          data.sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+          return data;
+        },
         loading: () => [],
         error: (e, s) => [],
       );
@@ -28,6 +31,7 @@ class InventoryScreen extends ConsumerWidget {
           return DragAndDropLists(
             children: List.generate(places.state.length, (index) {
               return DragAndDropList(
+                canDrag: false,
                 header: Column(
                   children: <Widget>[
                     Row(
