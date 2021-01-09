@@ -32,12 +32,12 @@ class DatabaseService {
 
   Stream<List<Place>> streamPlaces() => _service.collectionStream(
         path: FirestorePath.places,
-        builder: (data, documentId) => Place.fromMap(data),
+        builder: (data, documentId) => Place.fromMap(<dynamic, dynamic>{...data, 'id': documentId}),
       );
 
   Future<List<Place>> getPlaces() => _service.collectionGet(
         path: FirestorePath.places,
-        builder: (data, documentId) => Place.fromMap(data),
+        builder: (data, documentId) => Place.fromMap(<dynamic, dynamic>{...data, 'id': documentId}),
       );
 
   Future<void> savePlace(Place place) =>
