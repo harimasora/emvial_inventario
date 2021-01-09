@@ -4,22 +4,24 @@ import 'package:emival_inventario/services/db_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 
-class AddToolScreen extends ConsumerWidget {
-  const AddToolScreen({Key key}) : super(key: key);
+class AddToolScreen extends StatelessWidget {
+  final List<Place> places;
+  const AddToolScreen({@required this.places, Key key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context, ScopedReader watch) {
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Adicionar Ferramenta'),
       ),
-      body: const AddToolForm(),
+      body: AddToolForm(places: places),
     );
   }
 }
 
 class AddToolForm extends StatefulWidget {
-  const AddToolForm({Key key}) : super(key: key);
+  final List<Place> places;
+  const AddToolForm({@required this.places, Key key}) : super(key: key);
 
   @override
   _AddToolFormState createState() => _AddToolFormState();
@@ -33,6 +35,8 @@ class _AddToolFormState extends State<AddToolForm> {
 
   @override
   Widget build(BuildContext context) {
+    final List<Place> places = widget.places;
+    places.sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
     return Form(
       key: _formKey,
       child: Column(
@@ -49,31 +53,20 @@ class _AddToolFormState extends State<AddToolForm> {
             textCapitalization: TextCapitalization.words,
             validator: _validateName,
           ),
-          Consumer(
-            builder: (context, watch, child) {
-              final inventory = watch(inventoryProvider);
-              return DropdownButtonFormField<Place>(
-                value: place,
-                items: inventory.when(
-                    data: (data) {
-                      data.sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
-                      return data
-                          .map((e) => DropdownMenuItem<Place>(
-                                value: e,
-                                child: Text(e.name),
-                              ))
-                          .toList();
-                    },
-                    loading: () => [],
-                    error: (e, s) => []),
-                onChanged: (Place value) {
-                  setState(() {
-                    place = value;
-                  });
-                },
-                validator: _validatePlace,
-              );
+          DropdownButtonFormField<Place>(
+            value: place,
+            items: places
+                .map((e) => DropdownMenuItem<Place>(
+                      value: e,
+                      child: Text(e.name),
+                    ))
+                .toList(),
+            onChanged: (Place value) {
+              setState(() {
+                place = value;
+              });
             },
+            validator: _validatePlace,
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16.0),

@@ -1,7 +1,9 @@
 import 'package:emival_inventario/screens/add_place.dart';
 import 'package:emival_inventario/screens/add_tool.dart';
+import 'package:emival_inventario/screens/inventory_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:vector_math/vector_math.dart' show radians;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class RadialFab extends StatefulWidget {
   const RadialFab({Key key}) : super(key: key);
@@ -78,9 +80,10 @@ class RadialAnimation extends StatelessWidget {
                       color: Colors.white,
                     ),
                     onClick: () {
+                      final places = context.read(placesProvider);
                       _togglerAnimation();
                       Navigator.of(context).push<dynamic>(MaterialPageRoute<dynamic>(
-                        builder: (context) => const AddToolScreen(),
+                        builder: (context) => AddToolScreen(places: places.state),
                         fullscreenDialog: true,
                       ));
                     },
