@@ -92,7 +92,7 @@ class RadialAnimation extends StatelessWidget {
               ),
             ),
             Transform.translate(
-              offset: Offset.fromDirection(radians(225), degTwoTranslationAnimation.value * 100),
+              offset: Offset.fromDirection(radians(180), degTwoTranslationAnimation.value * 100),
               child: Transform(
                 transform: Matrix4.rotationZ(radians(rotationAnimation.value))..scale(degTwoTranslationAnimation.value),
                 alignment: Alignment.center,
@@ -112,29 +112,6 @@ class RadialAnimation extends StatelessWidget {
                         builder: (context) => const AddPlaceScreen(),
                         fullscreenDialog: true,
                       ));
-                    },
-                  ),
-                ),
-              ),
-            ),
-            Transform.translate(
-              offset: Offset.fromDirection(radians(180), degThreeTranslationAnimation.value * 100),
-              child: Transform(
-                transform: Matrix4.rotationZ(radians(rotationAnimation.value))
-                  ..scale(degThreeTranslationAnimation.value),
-                alignment: Alignment.center,
-                child: Transform.rotate(
-                  angle: radians(180),
-                  child: CircularButton(
-                    color: Colors.green,
-                    width: 50,
-                    height: 50,
-                    icon: const Icon(
-                      Icons.person,
-                      color: Colors.white,
-                    ),
-                    onClick: () {
-                      debugPrint('Third Button');
                     },
                   ),
                 ),

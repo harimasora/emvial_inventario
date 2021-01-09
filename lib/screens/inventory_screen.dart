@@ -2,6 +2,7 @@ import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:emival_inventario/models/place.dart';
 import 'package:emival_inventario/screens/edit_place.dart';
 import 'package:emival_inventario/screens/edit_tool.dart';
+import 'package:emival_inventario/screens/help_screen.dart';
 import 'package:emival_inventario/services/db_service.dart';
 import 'package:emival_inventario/widgets/radial_fab.dart';
 import 'package:flutter/material.dart';
@@ -28,6 +29,17 @@ class InventoryScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Inventário'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.help),
+            onPressed: () {
+              Navigator.of(context).push<dynamic>(MaterialPageRoute<dynamic>(
+                builder: (context) => const HelpScreen(),
+                fullscreenDialog: true,
+              ));
+            },
+          )
+        ],
       ),
       body: inventory.when(
         data: (data) {
