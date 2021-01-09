@@ -41,13 +41,13 @@ class InventoryScreen extends ConsumerWidget {
                     actionExtentRatio: 0.20,
                     secondaryActions: <Widget>[
                       IconSlideAction(
-                        caption: 'More',
+                        caption: 'Editar',
                         color: Colors.black45,
-                        icon: Icons.more_horiz,
+                        icon: Icons.edit,
                         onTap: () => _showSnackBar(context, 'More'),
                       ),
                       IconSlideAction(
-                        caption: 'Delete',
+                        caption: 'Apagar',
                         color: Colors.red,
                         icon: Icons.delete,
                         onTap: () {
@@ -69,13 +69,13 @@ class InventoryScreen extends ConsumerWidget {
                         actionExtentRatio: 0.20,
                         secondaryActions: <Widget>[
                           IconSlideAction(
-                            caption: 'More',
+                            caption: 'Editar',
                             color: Colors.black45,
-                            icon: Icons.more_horiz,
+                            icon: Icons.edit,
                             onTap: () => _showSnackBar(context, 'More'),
                           ),
                           IconSlideAction(
-                            caption: 'Delete',
+                            caption: 'Apagar',
                             color: Colors.red,
                             icon: Icons.delete,
                             onTap: () {
