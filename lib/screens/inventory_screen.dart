@@ -127,13 +127,6 @@ class InventoryScreen extends ConsumerWidget {
                 ),
               ],
             ),
-            dragHandle: const Padding(
-              padding: EdgeInsets.only(right: 10),
-              child: Icon(
-                Icons.menu,
-                color: Colors.black26,
-              ),
-            ),
           );
         },
         loading: () => const Center(child: Text('Carregando...')),
