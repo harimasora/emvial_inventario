@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:emival_inventario/constants/firestore_path.dart';
+import 'package:emival_inventario/models/item.dart';
 import 'package:emival_inventario/models/place.dart';
 import 'package:emival_inventario/services/firestore_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -39,6 +40,14 @@ class DatabaseService {
         path: FirestorePath.places,
         builder: (data, documentId) => Place.fromMap(<dynamic, dynamic>{...data, 'id': documentId}),
       );
+
+  Future<void> removeItemFromPlace(Place place, Item item) {
+    final placeToSave = place..items.remove(item);
+    return _service.setData(
+      path: '${FirestorePath.places}/${place.id}',
+      data: placeToSave.toMap(),
+    );
+  }
 
   Future<void> savePlace(Place place) =>
       _service.setData(path: '${FirestorePath.places}/${place.id}', data: place.toMap());

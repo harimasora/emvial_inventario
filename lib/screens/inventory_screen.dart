@@ -79,7 +79,7 @@ class InventoryScreen extends ConsumerWidget {
                             color: Colors.red,
                             icon: Icons.delete,
                             onTap: () {
-                              db.deletePlace(places.state[index]);
+                              db.removeItemFromPlace(places.state[index], places.state[index].items[innerIndex]);
                             },
                           ),
                         ],
