@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final databaseProvider = Provider<DatabaseService>((ref) => DatabaseService());
 
-final inventoryProvider = StreamProvider<List<Place>>((ref) {
+final inventoryStreamProvider = StreamProvider<List<Place>>((ref) {
   final db = ref.watch(databaseProvider);
 
   if (db == null) {
@@ -17,10 +17,25 @@ final inventoryProvider = StreamProvider<List<Place>>((ref) {
   return ref.watch(databaseProvider).streamPlaces();
 });
 
+final inventoryProvider = FutureProvider<List<Place>>((ref) async {
+  final db = ref.watch(databaseProvider);
+
+  if (db == null) {
+    return null;
+  }
+
+  return ref.watch(databaseProvider).getPlaces();
+});
+
 class DatabaseService {
   final _service = FirestoreService.instance;
 
   Stream<List<Place>> streamPlaces() => _service.collectionStream(
+        path: FirestorePath.places,
+        builder: (data, documentId) => Place.fromMap(data),
+      );
+
+  Future<List<Place>> getPlaces() => _service.collectionGet(
         path: FirestorePath.places,
         builder: (data, documentId) => Place.fromMap(data),
       );

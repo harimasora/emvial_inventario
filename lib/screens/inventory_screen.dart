@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final placesProvider = StateProvider<List<Place>>((ref) {
-  return ref.watch(inventoryProvider).when(
+  return ref.watch(inventoryStreamProvider).when(
         data: (data) => data,
         loading: () => [],
         error: (e, s) => [],
@@ -17,7 +17,7 @@ class InventoryScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, ScopedReader watch) {
     final places = watch(placesProvider);
-    final inventory = watch(inventoryProvider);
+    final inventory = watch(inventoryStreamProvider);
     final db = watch(databaseProvider);
     return Scaffold(
       appBar: AppBar(

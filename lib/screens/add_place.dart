@@ -12,9 +12,7 @@ class AddPlaceScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Adicionar Local'),
       ),
-      body: const Center(
-        child: AddPlaceForm(),
-      ),
+      body: const AddPlaceForm(),
     );
   }
 }
@@ -37,6 +35,7 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
       key: _formKey,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           TextFormField(
             decoration: const InputDecoration(
