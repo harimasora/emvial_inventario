@@ -55,12 +55,15 @@ class _AddToolFormState extends State<AddToolForm> {
               return DropdownButtonFormField<Place>(
                 value: place,
                 items: inventory.when(
-                    data: (data) => data
-                        .map((e) => DropdownMenuItem<Place>(
-                              value: e,
-                              child: Text(e.name),
-                            ))
-                        .toList(),
+                    data: (data) {
+                      data.sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+                      return data
+                          .map((e) => DropdownMenuItem<Place>(
+                                value: e,
+                                child: Text(e.name),
+                              ))
+                          .toList();
+                    },
                     loading: () => [],
                     error: (e, s) => []),
                 onChanged: (Place value) {
