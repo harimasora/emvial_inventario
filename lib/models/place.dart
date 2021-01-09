@@ -21,6 +21,14 @@ class Place {
     );
   }
 
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'id': id,
+      'name': name,
+      'items': items.map((v) => v.toMap()).toList(),
+    };
+  }
+
   @override
   String toString() {
     return 'id: $id, name: $name, items: $items';

@@ -15,6 +15,13 @@ class Item {
     );
   }
 
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'id': id,
+      'name': name,
+    };
+  }
+
   @override
   String toString() {
     return 'id: $id, name: $name';

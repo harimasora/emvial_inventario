@@ -24,4 +24,7 @@ class DatabaseService {
         path: FirestorePath.places,
         builder: (data, documentId) => Place.fromMap(data),
       );
+
+  Future<void> savePlace(Place place) =>
+      _service.setData(path: '${FirestorePath.places}/${place.id}', data: place.toMap());
 }
