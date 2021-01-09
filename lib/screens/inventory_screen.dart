@@ -30,58 +30,70 @@ class InventoryScreen extends ConsumerWidget {
       body: inventory.when(
         data: (data) {
           return DragAndDropLists(
-            children: List.generate(places.state.length, (index) {
-              return DragAndDropList(
-                canDrag: false,
-                contentsWhenEmpty: const Text('Não há ferramentas nesta obra'),
-                header: Column(
-                  children: <Widget>[
-                    Slidable(
-                      actionPane: const SlidableDrawerActionPane(),
-                      actionExtentRatio: 0.20,
-                      secondaryActions: <Widget>[
-                        IconSlideAction(
-                          caption: 'More',
-                          color: Colors.black45,
-                          icon: Icons.more_horiz,
-                          onTap: () => _showSnackBar(context, 'More'),
-                        ),
-                        IconSlideAction(
-                          caption: 'Delete',
-                          color: Colors.red,
-                          icon: Icons.delete,
-                          onTap: () {
-                            db.deletePlace(places.state[index]);
-                          },
-                        ),
-                      ],
-                      child: Container(
-                        color: Colors.white,
+            children: List.generate(
+              places.state.length,
+              (index) {
+                return DragAndDropList(
+                  canDrag: false,
+                  contentsWhenEmpty: const Text('Não há ferramentas nesta obra'),
+                  header: Slidable(
+                    actionPane: const SlidableDrawerActionPane(),
+                    actionExtentRatio: 0.20,
+                    secondaryActions: <Widget>[
+                      IconSlideAction(
+                        caption: 'More',
+                        color: Colors.black45,
+                        icon: Icons.more_horiz,
+                        onTap: () => _showSnackBar(context, 'More'),
+                      ),
+                      IconSlideAction(
+                        caption: 'Delete',
+                        color: Colors.red,
+                        icon: Icons.delete,
+                        onTap: () {
+                          db.deletePlace(places.state[index]);
+                        },
+                      ),
+                    ],
+                    child: ListTile(
+                      tileColor: Colors.grey[300],
+                      title: Text(places.state[index].name),
+                      subtitle: Text('${places.state[index].items.length} ferramenta(s)'),
+                    ),
+                  ),
+                  children: List.generate(
+                    places.state[index].items.length,
+                    (innerIndex) => DragAndDropItem(
+                      child: Slidable(
+                        actionPane: const SlidableDrawerActionPane(),
+                        actionExtentRatio: 0.20,
+                        secondaryActions: <Widget>[
+                          IconSlideAction(
+                            caption: 'More',
+                            color: Colors.black45,
+                            icon: Icons.more_horiz,
+                            onTap: () => _showSnackBar(context, 'More'),
+                          ),
+                          IconSlideAction(
+                            caption: 'Delete',
+                            color: Colors.red,
+                            icon: Icons.delete,
+                            onTap: () {
+                              db.deletePlace(places.state[index]);
+                            },
+                          ),
+                        ],
                         child: ListTile(
-                          tileColor: Colors.grey[300],
-                          title: Text(places.state[index].name),
-                          subtitle: Text('${places.state[index].items.length} ferramenta(s)'),
+                          title: Text(
+                            places.state[index].items[innerIndex].name,
+                          ),
                         ),
                       ),
                     ),
-                  ],
-                ),
-                children: List.generate(
-                    places.state[index].items.length,
-                    (innerIndex) => DragAndDropItem(
-                          child: Row(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                                child: Text(
-                                  places.state[index].items[innerIndex].name,
-                                ),
-                              ),
-                            ],
-                          ),
-                        )),
-              );
-            }),
+                  ),
+                );
+              },
+            ),
             onItemReorder: (int oldItemIndex, int oldListIndex, int newItemIndex, int newListIndex) {
               final placesCopy =
                   List<Place>.generate(places.state.length, (index) => Place.fromMap(places.state[index].toMap()));
@@ -104,8 +116,7 @@ class InventoryScreen extends ConsumerWidget {
               placesCopy.insert(newListIndex, movedList);
               places.state = placesCopy;
             },
-            // listPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-            itemDivider: const Divider(),
+            itemDivider: const Divider(height: 1),
             itemDecorationWhileDragging: BoxDecoration(
               color: Colors.white,
               boxShadow: [
