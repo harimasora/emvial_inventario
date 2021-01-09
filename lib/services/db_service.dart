@@ -43,5 +43,7 @@ class DatabaseService {
   Future<void> savePlace(Place place) =>
       _service.setData(path: '${FirestorePath.places}/${place.id}', data: place.toMap());
 
+  Future<void> deletePlace(Place place) => _service.deleteData(path: '${FirestorePath.places}/${place.id}');
+
   Future<void> addPlace(Place place) => _service.collectionAdd(path: FirestorePath.places, data: place.toMap());
 }

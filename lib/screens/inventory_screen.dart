@@ -4,6 +4,7 @@ import 'package:emival_inventario/services/db_service.dart';
 import 'package:emival_inventario/widgets/radial_fab.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 final placesProvider = StateProvider<List<Place>>((ref) {
   return ref.watch(inventoryStreamProvider).when(
@@ -35,16 +36,33 @@ class InventoryScreen extends ConsumerWidget {
                 contentsWhenEmpty: const Text('Não há ferramentas nesta obra'),
                 header: Column(
                   children: <Widget>[
-                    Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8, bottom: 4),
-                          child: Text(
-                            places.state[index].name,
-                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                          ),
+                    Slidable(
+                      actionPane: const SlidableDrawerActionPane(),
+                      actionExtentRatio: 0.20,
+                      secondaryActions: <Widget>[
+                        IconSlideAction(
+                          caption: 'More',
+                          color: Colors.black45,
+                          icon: Icons.more_horiz,
+                          onTap: () => _showSnackBar(context, 'More'),
+                        ),
+                        IconSlideAction(
+                          caption: 'Delete',
+                          color: Colors.red,
+                          icon: Icons.delete,
+                          onTap: () {
+                            db.deletePlace(places.state[index]);
+                          },
                         ),
                       ],
+                      child: Container(
+                        color: Colors.white,
+                        child: ListTile(
+                          tileColor: Colors.grey[300],
+                          title: Text(places.state[index].name),
+                          subtitle: Text('${places.state[index].items.length} ferramenta(s)'),
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -121,5 +139,9 @@ class InventoryScreen extends ConsumerWidget {
       ),
       floatingActionButton: const RadialFab(),
     );
+  }
+
+  void _showSnackBar(BuildContext context, String text) {
+    Scaffold.of(context).showSnackBar(SnackBar(content: Text(text)));
   }
 }
