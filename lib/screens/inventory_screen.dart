@@ -1,6 +1,7 @@
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:emival_inventario/models/place.dart';
 import 'package:emival_inventario/services/db_service.dart';
+import 'package:emival_inventario/widgets/radial_fab.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -113,10 +114,7 @@ class InventoryScreen extends ConsumerWidget {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        child: const Icon(Icons.add),
-      ),
+      floatingActionButton: const RadialFab(),
     );
   }
 }
