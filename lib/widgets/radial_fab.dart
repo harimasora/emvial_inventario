@@ -1,3 +1,5 @@
+import 'package:emival_inventario/screens/add_place.dart';
+import 'package:emival_inventario/screens/add_tool.dart';
 import 'package:flutter/material.dart';
 import 'package:vector_math/vector_math.dart' show radians;
 
@@ -76,7 +78,11 @@ class RadialAnimation extends StatelessWidget {
                       color: Colors.white,
                     ),
                     onClick: () {
-                      debugPrint('First Button');
+                      _togglerAnimation();
+                      Navigator.of(context).push<dynamic>(MaterialPageRoute<dynamic>(
+                        builder: (context) => const AddToolScreen(),
+                        fullscreenDialog: true,
+                      ));
                     },
                   ),
                 ),
@@ -98,7 +104,11 @@ class RadialAnimation extends StatelessWidget {
                       color: Colors.white,
                     ),
                     onClick: () {
-                      debugPrint('Second button');
+                      _togglerAnimation();
+                      Navigator.of(context).push<dynamic>(MaterialPageRoute<dynamic>(
+                        builder: (context) => const AddPlaceScreen(),
+                        fullscreenDialog: true,
+                      ));
                     },
                   ),
                 ),
@@ -138,19 +148,21 @@ class RadialAnimation extends StatelessWidget {
                   Icons.add,
                   color: Colors.white,
                 ),
-                onClick: () {
-                  if (controller.isCompleted) {
-                    controller.reverse();
-                  } else {
-                    controller.forward();
-                  }
-                },
+                onClick: _togglerAnimation,
               ),
             )
           ],
         );
       },
     );
+  }
+
+  void _togglerAnimation() {
+    if (controller.isCompleted) {
+      controller.reverse();
+    } else {
+      controller.forward();
+    }
   }
 }
 

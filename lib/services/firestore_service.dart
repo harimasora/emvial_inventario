@@ -44,6 +44,11 @@ class FirestoreService {
     });
   }
 
+  Future<DocumentReference> collectionAdd({@required String path, @required Map<String, dynamic> data}) async {
+    final ref = FirebaseFirestore.instance.collection(path);
+    return ref.add(Map<String, dynamic>.from(data));
+  }
+
   Stream<T> documentStream<T>({
     @required String path,
     @required T Function(Map<String, dynamic> data, String documentID) builder,
