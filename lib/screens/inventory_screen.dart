@@ -32,6 +32,7 @@ class InventoryScreen extends ConsumerWidget {
             children: List.generate(places.state.length, (index) {
               return DragAndDropList(
                 canDrag: false,
+                contentsWhenEmpty: const Text('Não há ferramentas nesta obra'),
                 header: Column(
                   children: <Widget>[
                     Row(
