@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:vector_math/vector_math.dart' show radians;
 
@@ -27,31 +25,25 @@ class _RadialFabState extends State<RadialFab> with SingleTickerProviderStateMix
 
 class RadialAnimation extends StatelessWidget {
   final AnimationController controller;
-  final Animation<double> scale;
-  final Animation<double> translation;
-  final Animation<double> rotation;
+  final Animation<double> degOneTranslationAnimation, degTwoTranslationAnimation, degThreeTranslationAnimation;
+  final Animation<double> rotationAnimation;
+  final Animation<Color> colorAnimation;
   RadialAnimation({Key key, this.controller})
-      : scale = Tween<double>(
-          begin: 1,
-          end: 0,
-        ).animate(
-          CurvedAnimation(parent: controller, curve: Curves.fastOutSlowIn),
-        ),
-        translation = Tween<double>(
-          begin: 0.0,
-          end: 80.0,
-        ).animate(
-          CurvedAnimation(parent: controller, curve: Curves.linear),
-        ),
-        rotation = Tween<double>(
-          begin: radians(90),
-          end: radians(180),
-        ).animate(
-          CurvedAnimation(
-            parent: controller,
-            curve: Curves.decelerate,
-          ),
-        ),
+      : degOneTranslationAnimation = TweenSequence([
+          TweenSequenceItem<double>(tween: Tween<double>(begin: 0.0, end: 1.2), weight: 75.0),
+          TweenSequenceItem<double>(tween: Tween<double>(begin: 1.2, end: 1.0), weight: 25.0),
+        ]).animate(controller),
+        degTwoTranslationAnimation = TweenSequence([
+          TweenSequenceItem<double>(tween: Tween<double>(begin: 0.0, end: 1.4), weight: 55.0),
+          TweenSequenceItem<double>(tween: Tween<double>(begin: 1.4, end: 1.0), weight: 45.0),
+        ]).animate(controller),
+        degThreeTranslationAnimation = TweenSequence([
+          TweenSequenceItem<double>(tween: Tween<double>(begin: 0.0, end: 1.75), weight: 35.0),
+          TweenSequenceItem<double>(tween: Tween<double>(begin: 1.75, end: 1.0), weight: 65.0),
+        ]).animate(controller),
+        rotationAnimation =
+            Tween<double>(begin: 0.0, end: 180.0).animate(CurvedAnimation(parent: controller, curve: Curves.easeOut)),
+        colorAnimation = ColorTween(begin: Colors.blue, end: Colors.red).animate(controller),
         super(key: key);
 
   @override
@@ -59,59 +51,125 @@ class RadialAnimation extends StatelessWidget {
     return AnimatedBuilder(
       animation: controller,
       builder: (context, child) {
-        return Transform.rotate(
-          angle: rotation.value,
-          child: Stack(
-            children: [
-              _buildButton(0, color: Colors.green, iconData: Icons.location_pin),
-              _buildButton(90, color: Colors.green, iconData: Icons.build),
-              Transform.scale(
-                scale: scale.value - 1,
-                child: FloatingActionButton(
-                  onPressed: _close,
-                  backgroundColor: Colors.red,
-                  child: const Icon(Icons.close),
+        return Stack(
+          alignment: Alignment.bottomRight,
+          children: <Widget>[
+            const IgnorePointer(
+              child: SizedBox(
+                height: 150.0,
+                width: 150.0,
+              ),
+            ),
+            Transform.translate(
+              offset: Offset.fromDirection(radians(270), degOneTranslationAnimation.value * 100),
+              child: Transform(
+                transform: Matrix4.rotationZ(radians(rotationAnimation.value))..scale(degOneTranslationAnimation.value),
+                alignment: Alignment.center,
+                child: Transform.rotate(
+                  angle: radians(180),
+                  child: CircularButton(
+                    color: Colors.green,
+                    width: 50,
+                    height: 50,
+                    icon: const Icon(
+                      Icons.build,
+                      color: Colors.white,
+                    ),
+                    onClick: () {
+                      debugPrint('First Button');
+                    },
+                  ),
                 ),
               ),
-              Transform.scale(
-                scale: scale.value,
-                child: FloatingActionButton(
-                  onPressed: _open,
-                  backgroundColor: Colors.blue,
-                  child: const Icon(Icons.add),
+            ),
+            Transform.translate(
+              offset: Offset.fromDirection(radians(225), degTwoTranslationAnimation.value * 100),
+              child: Transform(
+                transform: Matrix4.rotationZ(radians(rotationAnimation.value))..scale(degTwoTranslationAnimation.value),
+                alignment: Alignment.center,
+                child: Transform.rotate(
+                  angle: radians(180),
+                  child: CircularButton(
+                    color: Colors.green,
+                    width: 50,
+                    height: 50,
+                    icon: const Icon(
+                      Icons.place,
+                      color: Colors.white,
+                    ),
+                    onClick: () {
+                      debugPrint('Second button');
+                    },
+                  ),
                 ),
-              )
-            ],
-          ),
+              ),
+            ),
+            Transform.translate(
+              offset: Offset.fromDirection(radians(180), degThreeTranslationAnimation.value * 100),
+              child: Transform(
+                transform: Matrix4.rotationZ(radians(rotationAnimation.value))
+                  ..scale(degThreeTranslationAnimation.value),
+                alignment: Alignment.center,
+                child: Transform.rotate(
+                  angle: radians(180),
+                  child: CircularButton(
+                    color: Colors.green,
+                    width: 50,
+                    height: 50,
+                    icon: const Icon(
+                      Icons.person,
+                      color: Colors.white,
+                    ),
+                    onClick: () {
+                      debugPrint('Third Button');
+                    },
+                  ),
+                ),
+              ),
+            ),
+            Transform(
+              transform: Matrix4.rotationZ(radians(rotationAnimation.value / 4)),
+              alignment: Alignment.center,
+              child: CircularButton(
+                color: colorAnimation.value,
+                width: 60,
+                height: 60,
+                icon: const Icon(
+                  Icons.add,
+                  color: Colors.white,
+                ),
+                onClick: () {
+                  if (controller.isCompleted) {
+                    controller.reverse();
+                  } else {
+                    controller.forward();
+                  }
+                },
+              ),
+            )
+          ],
         );
       },
     );
   }
+}
 
-  Widget _buildButton(double angle, {Color color, IconData iconData}) {
-    final double rad = radians(angle);
-    return Transform(
-      transform: Matrix4.identity()
-        ..translate(
-          translation.value * cos(rad),
-          translation.value * sin(rad),
-        ),
-      child: Transform.rotate(
-        angle: radians(180),
-        child: FloatingActionButton(
-          backgroundColor: color,
-          onPressed: _close,
-          child: Icon(iconData),
-        ),
-      ),
+class CircularButton extends StatelessWidget {
+  final double width;
+  final double height;
+  final Color color;
+  final Icon icon;
+  final void Function() onClick;
+
+  const CircularButton({this.color, this.width, this.height, this.icon, this.onClick});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+      width: width,
+      height: height,
+      child: IconButton(icon: icon, onPressed: onClick),
     );
-  }
-
-  void _open() {
-    controller.forward();
-  }
-
-  void _close() {
-    controller.reverse();
   }
 }
