@@ -10,7 +10,7 @@ class Item {
     }
 
     return Item(
-      id: data['id'] as String ?? '',
+      id: data['id'] as String,
       name: data['name'] as String ?? '',
     );
   }

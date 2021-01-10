@@ -1,6 +1,7 @@
 import 'package:emival_inventario/models/item.dart';
 import 'package:emival_inventario/models/place.dart';
 import 'package:emival_inventario/services/db_service.dart';
+import 'package:emival_inventario/services/notification_service.dart';
 import 'package:emival_inventario/widgets/save_indicator_button.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +17,22 @@ class EditToolScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Editar Ferramenta'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.delete),
+            onPressed: () async {
+              final isDelete = await NotificationService.confirm(
+                  context, 'Apagar', 'Tem certeza que deseja apagar esta ferramenta?');
+              if (isDelete) {
+                final db = context.read(databaseProvider);
+                final Place origin = place;
+                final originToSave = Place(id: origin.id, name: origin.name, items: origin.items)..items.remove(item);
+                await db.savePlace(originToSave);
+                Navigator.of(context).pop();
+              }
+            },
+          )
+        ],
       ),
       body: GestureDetector(
         onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
@@ -138,10 +155,20 @@ class _EditToolFormState extends State<EditToolForm> {
       try {
         startLoading();
         final db = context.read(databaseProvider);
-        final placeToSave = Place(id: place.id, name: place.name, items: place.items)
-          ..items.remove(widget.item)
-          ..items.add((Item(name: name)));
-        await db.savePlace(placeToSave);
+
+        final Place origin = widget.place;
+        final Place destination = place;
+        if (origin.id == destination.id) {
+          final destinationToSave = Place(id: destination.id, name: destination.name, items: destination.items)
+            ..items.remove(widget.item)
+            ..items.add((Item(name: name)));
+          await db.savePlace(destinationToSave);
+        } else {
+          final originToSave = Place(id: origin.id, name: origin.name, items: origin.items)..items.remove(widget.item);
+          final destinationToSave = Place(id: destination.id, name: destination.name, items: destination.items)
+            ..items.add((Item(name: name)));
+          await Future.wait([db.savePlace(originToSave), db.savePlace(destinationToSave)]);
+        }
         Navigator.of(context).pop();
       } on Exception catch (e) {
         debugPrint(e.toString());

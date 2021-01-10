@@ -13,7 +13,7 @@ class Place {
     }
 
     return Place(
-      id: data['id'] as String ?? '',
+      id: data['id'] as String,
       name: data['name'] as String ?? '',
       items: (data['items'] as List ?? <Map<dynamic, dynamic>>[])
           .map<Item>((dynamic v) => Item.fromMap(v as Map<dynamic, dynamic>))
@@ -33,4 +33,14 @@ class Place {
   String toString() {
     return 'id: $id, name: $name, items: $items';
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other.runtimeType != runtimeType) return false;
+    return other is Place && other.id == id && other.name == name;
+  }
+
+  @override
+  int get hashCode => super.hashCode;
 }

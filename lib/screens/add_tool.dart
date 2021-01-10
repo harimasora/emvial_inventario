@@ -6,8 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 
 class AddToolScreen extends StatelessWidget {
-  final List<Place> places;
-  const AddToolScreen({@required this.places, Key key}) : super(key: key);
+  final Place place;
+  const AddToolScreen({@required this.place, Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +19,7 @@ class AddToolScreen extends StatelessWidget {
         onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
         child: SafeArea(
           child: SingleChildScrollView(
-            child: AddToolForm(places: places),
+            child: AddToolForm(place: place),
           ),
         ),
       ),
@@ -28,8 +28,8 @@ class AddToolScreen extends StatelessWidget {
 }
 
 class AddToolForm extends StatefulWidget {
-  final List<Place> places;
-  const AddToolForm({@required this.places, Key key}) : super(key: key);
+  final Place place;
+  const AddToolForm({@required this.place, Key key}) : super(key: key);
 
   @override
   _AddToolFormState createState() => _AddToolFormState();
@@ -48,10 +48,14 @@ class _AddToolFormState extends State<AddToolForm> {
   void finishLoading() => setState(() => _isLoading = false);
 
   @override
+  void initState() {
+    super.initState();
+    place = widget.place;
+  }
+
+  @override
   Widget build(BuildContext context) {
     final overtextStyle = Theme.of(context).textTheme.overline.copyWith(color: Theme.of(context).primaryColor);
-    final List<Place> places = widget.places;
-    places.sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
     return Form(
       key: _formKey,
       autovalidateMode: _autoValidate,
@@ -72,25 +76,10 @@ class _AddToolFormState extends State<AddToolForm> {
               textCapitalization: TextCapitalization.words,
               validator: _validateName,
             ),
+            const SizedBox(height: 16),
+            Text('LOCAL:', style: overtextStyle),
             const SizedBox(height: 8),
-            DropdownButtonFormField<Place>(
-              decoration: const InputDecoration(
-                labelText: 'Local',
-              ),
-              value: place,
-              items: places
-                  .map((e) => DropdownMenuItem<Place>(
-                        value: e,
-                        child: Text(e.name),
-                      ))
-                  .toList(),
-              onChanged: (Place value) {
-                setState(() {
-                  place = value;
-                });
-              },
-              validator: _validatePlace,
-            ),
+            Text(place.name),
             const SizedBox(height: 16),
             SaveIndicatorButton(
               isLoading: _isLoading,
@@ -105,14 +94,6 @@ class _AddToolFormState extends State<AddToolForm> {
   String _validateName(String value) {
     if (value.isEmpty) {
       return 'Insira um nome';
-    }
-
-    return null;
-  }
-
-  String _validatePlace(Place value) {
-    if (value == null) {
-      return 'Insira um local';
     }
 
     return null;

@@ -82,10 +82,10 @@ class RadialAnimation extends StatelessWidget {
                     onClick: () {
                       final places = context.read(placesProvider);
                       _togglerAnimation();
-                      Navigator.of(context).push<dynamic>(MaterialPageRoute<dynamic>(
-                        builder: (context) => AddToolScreen(places: places.state),
-                        fullscreenDialog: true,
-                      ));
+                      // Navigator.of(context).push<dynamic>(MaterialPageRoute<dynamic>(
+                      //   builder: (context) => AddToolScreen(places: places.state),
+                      //   fullscreenDialog: true,
+                      // ));
                     },
                   ),
                 ),
