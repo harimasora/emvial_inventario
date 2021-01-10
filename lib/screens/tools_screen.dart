@@ -40,7 +40,7 @@ class ToolsScreen extends ConsumerWidget {
                   title: Text(
                     place.items[index].name ?? '',
                   ),
-                  trailing: const Icon(Icons.edit),
+                  trailing: const Icon(Icons.chevron_right),
                   onTap: () {
                     Navigator.of(context).push<dynamic>(
                       MaterialPageRoute<dynamic>(
