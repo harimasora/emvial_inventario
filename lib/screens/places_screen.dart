@@ -75,7 +75,7 @@ class PlacesScreen extends ConsumerWidget {
               onTap: () {
                 Navigator.of(context).push<dynamic>(
                   MaterialPageRoute<dynamic>(
-                    builder: (context) => ToolsScreen(place: places.state[index]),
+                    builder: (context) => ToolsScreen(placeId: places.state[index].id),
                   ),
                 );
               },

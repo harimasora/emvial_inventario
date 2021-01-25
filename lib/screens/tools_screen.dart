@@ -1,4 +1,3 @@
-import 'package:emival_inventario/models/place.dart';
 import 'package:emival_inventario/screens/add_tool.dart';
 import 'package:emival_inventario/screens/edit_tool.dart';
 import 'package:emival_inventario/screens/inventory_screen.dart';
@@ -6,12 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ToolsScreen extends ConsumerWidget {
-  final Place place;
-  const ToolsScreen({@required this.place, Key key}) : super(key: key);
+  final String placeId;
+  const ToolsScreen({@required this.placeId, Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, ScopedReader watch) {
     final places = watch(placesProvider);
+    final place = places.state.firstWhere((element) => element.id == placeId);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Ferramentas'),
