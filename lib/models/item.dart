@@ -35,6 +35,6 @@ class Item {
 
   @override
   String toString() {
-    return 'id: $id, name: $name';
+    return 'id: $id';
   }
 }

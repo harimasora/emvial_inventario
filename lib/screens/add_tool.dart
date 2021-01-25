@@ -1,7 +1,9 @@
 import 'package:emival_inventario/models/item.dart';
 import 'package:emival_inventario/models/place.dart';
+import 'package:emival_inventario/models/place_item.dart';
 import 'package:emival_inventario/services/db_service.dart';
 import 'package:emival_inventario/widgets/save_indicator_button.dart';
+import 'package:emival_inventario/widgets/tool_image.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 
@@ -40,6 +42,7 @@ class _AddToolFormState extends State<AddToolForm> {
 
   String name;
   Place place;
+  PlaceItem placeItem;
 
   bool _isLoading = false;
   AutovalidateMode _autoValidate = AutovalidateMode.disabled;
@@ -50,7 +53,9 @@ class _AddToolFormState extends State<AddToolForm> {
   @override
   void initState() {
     super.initState();
+    final db = context.read(databaseProvider);
     place = widget.place;
+    placeItem = PlaceItem(place: widget.place, item: Item(id: db.randomDocumentId, imageUrl: ''));
   }
 
   @override
@@ -66,6 +71,18 @@ class _AddToolFormState extends State<AddToolForm> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Text('DADOS DA FERRAMENTA', style: overtextStyle),
+            const SizedBox(height: 16),
+            Center(
+              child: ToolImage(
+                placeItem: placeItem,
+                onDelete: _deleteImage,
+                onUploadComplete: (downloadUrl) {
+                  setState(() {
+                    placeItem = PlaceItem(place: placeItem.place, item: placeItem.item.copyWith(imageUrl: downloadUrl));
+                  });
+                },
+              ),
+            ),
             TextFormField(
               decoration: const InputDecoration(
                 labelText: 'Nome',
@@ -107,8 +124,9 @@ class _AddToolFormState extends State<AddToolForm> {
       try {
         startLoading();
         final db = context.read(databaseProvider);
-        final placeToSave = Place(id: place.id, name: place.name, items: place.items)
-          ..items.add(Item(id: db.randomDocumentId, name: name));
+        final placeToSave = Place(id: place.id, name: place.name, items: place.items);
+        placeToSave.items.removeWhere((item) => item.id == placeItem.item.id);
+        placeToSave.items.add(placeItem.item.copyWith(name: name));
         await db.savePlace(placeToSave);
         Navigator.of(context).pop();
       } on Exception catch (e) {
@@ -119,5 +137,13 @@ class _AddToolFormState extends State<AddToolForm> {
     } else {
       setState(() => _autoValidate = AutovalidateMode.always);
     }
+  }
+
+  void _deleteImage() {
+    final db = context.read(databaseProvider);
+    db.deleteImage(PlaceItem(place: widget.place, item: placeItem.item));
+    setState(() {
+      placeItem = PlaceItem(place: placeItem.place, item: placeItem.item.copyWith(imageUrl: ''));
+    });
   }
 }
