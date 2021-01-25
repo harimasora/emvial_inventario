@@ -3,7 +3,9 @@ import 'dart:async';
 import 'package:emival_inventario/constants/firestore_path.dart';
 import 'package:emival_inventario/models/item.dart';
 import 'package:emival_inventario/models/place.dart';
+import 'package:emival_inventario/models/place_item.dart';
 import 'package:emival_inventario/services/firestore_service.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final databaseProvider = Provider<DatabaseService>((ref) => DatabaseService());
@@ -31,6 +33,8 @@ final inventoryProvider = FutureProvider<List<Place>>((ref) async {
 class DatabaseService {
   final _service = FirestoreService.instance;
 
+  String get randomDocumentId => _service.randomDocumentId;
+
   Stream<List<Place>> streamPlaces() => _service.collectionStream(
         path: FirestorePath.places,
         builder: (data, documentId) => Place.fromMap(<dynamic, dynamic>{...data, 'id': documentId}),
@@ -47,6 +51,25 @@ class DatabaseService {
       path: '${FirestorePath.places}/${place.id}',
       data: placeToSave.toMap(),
     );
+  }
+
+  Future<void> savePlaceItem(PlaceItem placeItem) {
+    // Remove previous item
+    placeItem.place.items.removeWhere((item) => item.id == placeItem.item.id);
+    // Add new data
+    placeItem.place.items.add(placeItem.item);
+    // Save place
+    return savePlace(placeItem.place);
+  }
+
+  Future<void> deleteImage(PlaceItem placeItem) {
+    final FirebaseStorage _storage =
+        FirebaseStorage.instanceFor(bucket: 'gs://emival-engenharia-inventario.appspot.com');
+
+    return Future.wait([
+      _storage.ref().child('tools/${placeItem.item.id}.png').delete(),
+      savePlaceItem(PlaceItem(place: placeItem.place, item: placeItem.item.copyWith(imageUrl: ''))),
+    ]);
   }
 
   Future<void> savePlace(Place place) =>

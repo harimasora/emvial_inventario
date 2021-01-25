@@ -5,6 +5,8 @@ class FirestoreService {
   FirestoreService._();
   static final instance = FirestoreService._();
 
+  String get randomDocumentId => FirebaseFirestore.instance.collection('random').doc().id;
+
   Future<void> setData({
     @required String path,
     @required Map<String, dynamic> data,

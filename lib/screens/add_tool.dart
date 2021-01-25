@@ -107,7 +107,8 @@ class _AddToolFormState extends State<AddToolForm> {
       try {
         startLoading();
         final db = context.read(databaseProvider);
-        final placeToSave = Place(id: place.id, name: place.name, items: place.items)..items.add(Item(name: name));
+        final placeToSave = Place(id: place.id, name: place.name, items: place.items)
+          ..items.add(Item(id: db.randomDocumentId, name: name));
         await db.savePlace(placeToSave);
         Navigator.of(context).pop();
       } on Exception catch (e) {
