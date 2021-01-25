@@ -176,13 +176,13 @@ class _EditToolFormState extends State<EditToolForm> {
         final Place destination = place;
         if (origin.id == destination.id) {
           final destinationToSave = Place(id: destination.id, name: destination.name, items: destination.items)
-            ..items.remove(widget.item)
-            ..items.add((Item(name: name)));
+            ..items.removeWhere((item) => item.id == placeItem.item.id)
+            ..items.add((placeItem.item.copyWith(name: name)));
           await db.savePlace(destinationToSave);
         } else {
           final originToSave = Place(id: origin.id, name: origin.name, items: origin.items)..items.remove(widget.item);
           final destinationToSave = Place(id: destination.id, name: destination.name, items: destination.items)
-            ..items.add((Item(name: name)));
+            ..items.add((placeItem.item.copyWith(name: name)));
           await Future.wait([db.savePlace(originToSave), db.savePlace(destinationToSave)]);
         }
         Navigator.of(context).pop();
