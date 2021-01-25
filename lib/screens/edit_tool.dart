@@ -196,11 +196,14 @@ class _EditToolFormState extends State<EditToolForm> {
     }
   }
 
-  void _deleteImage() {
-    final db = context.read(databaseProvider);
-    db.deleteImage(PlaceItem(place: widget.place, item: widget.item));
-    setState(() {
-      placeItem = PlaceItem(place: placeItem.place, item: placeItem.item.copyWith(imageUrl: ''));
-    });
+  Future<void> _deleteImage() async {
+    final isDelete = await NotificationService.confirm(context, 'Apagar', 'Tem certeza que deseja apagar esta imagem?');
+    if (isDelete) {
+      final db = context.read(databaseProvider);
+      db.deleteImage(PlaceItem(place: widget.place, item: widget.item));
+      setState(() {
+        placeItem = PlaceItem(place: placeItem.place, item: placeItem.item.copyWith(imageUrl: ''));
+      });
+    }
   }
 }

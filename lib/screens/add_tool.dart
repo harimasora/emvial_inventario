@@ -2,6 +2,7 @@ import 'package:emival_inventario/models/item.dart';
 import 'package:emival_inventario/models/place.dart';
 import 'package:emival_inventario/models/place_item.dart';
 import 'package:emival_inventario/services/db_service.dart';
+import 'package:emival_inventario/services/notification_service.dart';
 import 'package:emival_inventario/widgets/save_indicator_button.dart';
 import 'package:emival_inventario/widgets/tool_image.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -139,11 +140,14 @@ class _AddToolFormState extends State<AddToolForm> {
     }
   }
 
-  void _deleteImage() {
-    final db = context.read(databaseProvider);
-    db.deleteImage(PlaceItem(place: widget.place, item: placeItem.item));
-    setState(() {
-      placeItem = PlaceItem(place: placeItem.place, item: placeItem.item.copyWith(imageUrl: ''));
-    });
+  Future<void> _deleteImage() async {
+    final isDelete = await NotificationService.confirm(context, 'Apagar', 'Tem certeza que deseja apagar esta imagem?');
+    if (isDelete) {
+      final db = context.read(databaseProvider);
+      db.deleteImage(PlaceItem(place: widget.place, item: placeItem.item));
+      setState(() {
+        placeItem = PlaceItem(place: placeItem.place, item: placeItem.item.copyWith(imageUrl: ''));
+      });
+    }
   }
 }
