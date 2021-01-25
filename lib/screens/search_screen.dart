@@ -54,26 +54,28 @@ class SearchScreen extends ConsumerWidget {
               subject.state = value;
             },
           ),
-          ListView.separated(
-            shrinkWrap: true,
-            itemCount: searchResults.length,
-            itemBuilder: (context, index) => ListTile(
-              title: Text(searchResults[index].item.name),
-              subtitle: Text(searchResults[index].place.name),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () {
-                Navigator.of(context).push<dynamic>(
-                  MaterialPageRoute<dynamic>(
-                    builder: (context) => EditToolScreen(
-                      item: searchResults[index].item,
-                      place: searchResults[index].place,
-                      places: places.state,
+          Expanded(
+            child: ListView.separated(
+              shrinkWrap: true,
+              itemCount: searchResults.length,
+              itemBuilder: (context, index) => ListTile(
+                title: Text(searchResults[index].item.name),
+                subtitle: Text(searchResults[index].place.name),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () {
+                  Navigator.of(context).push<dynamic>(
+                    MaterialPageRoute<dynamic>(
+                      builder: (context) => EditToolScreen(
+                        item: searchResults[index].item,
+                        place: searchResults[index].place,
+                        places: places.state,
+                      ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
+              separatorBuilder: (context, index) => const Divider(height: 1),
             ),
-            separatorBuilder: (context, index) => const Divider(height: 1),
           ),
         ],
       ),
