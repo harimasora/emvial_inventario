@@ -1,6 +1,7 @@
 import 'package:emival_inventario/models/place_item.dart';
 import 'package:emival_inventario/widgets/image_capture.dart';
 import 'package:flutter/material.dart';
+import 'package:pinch_zoom/pinch_zoom.dart';
 
 class ToolImage extends StatelessWidget {
   const ToolImage({
@@ -51,7 +52,11 @@ class ToolImage extends StatelessWidget {
                     Navigator.of(context).push<dynamic>(MaterialPageRoute<dynamic>(
                       builder: (context) => Scaffold(
                         appBar: AppBar(),
-                        body: Image.network(item.imageUrl),
+                        body: PinchZoom(
+                          image: Image.network(item.imageUrl),
+                          zoomedBackgroundColor: Colors.black.withOpacity(0.5),
+                          maxScale: 2.5,
+                        ),
                       ),
                     ));
                   },
