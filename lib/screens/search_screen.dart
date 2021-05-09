@@ -30,55 +30,78 @@ final searchResultsProvider = Provider<List<PlaceItem>>((ref) {
   return placesItems.where((v) => v.item.name.toLowerCase().contains(subject.state.toLowerCase())).toList();
 });
 
-class SearchScreen extends ConsumerWidget {
+class SearchScreen extends StatefulWidget {
   const SearchScreen({Key key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context, ScopedReader watch) {
-    final places = watch(placesProvider);
-    final searchResults = watch(searchResultsProvider);
-    final subject = watch(searchTextProvider);
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Buscar'),
-      ),
-      body: Column(
-        children: [
-          TextFormField(
-            decoration: const InputDecoration(
-              hintText: 'Nome da ferramenta',
-              prefixIcon: Icon(Icons.search),
-            ),
-            initialValue: subject.state,
-            onChanged: (value) {
-              subject.state = value;
-            },
+  _SearchScreenState createState() => _SearchScreenState();
+}
+
+class _SearchScreenState extends State<SearchScreen> {
+  final searchController = TextEditingController(text: '');
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer(
+      builder: (context, watch, child) {
+        final places = watch(placesProvider);
+        final searchResults = watch(searchResultsProvider);
+        final subject = watch(searchTextProvider);
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text('Buscar'),
           ),
-          Expanded(
-            child: ListView.separated(
-              shrinkWrap: true,
-              itemCount: searchResults.length,
-              itemBuilder: (context, index) => ListTile(
-                title: Text(searchResults[index].item.name),
-                subtitle: Text(searchResults[index].place.name),
-                trailing: const Icon(Icons.chevron_right),
-                onTap: () {
-                  Navigator.of(context).push<dynamic>(
-                    MaterialPageRoute<dynamic>(
-                      builder: (context) => EditToolScreen(
-                        item: searchResults[index].item,
-                        place: searchResults[index].place,
-                        places: places.state,
-                      ),
-                    ),
-                  );
+          body: Column(
+            children: [
+              TextFormField(
+                decoration: InputDecoration(
+                  hintText: 'Nome da ferramenta',
+                  prefixIcon: const Icon(Icons.search),
+                  suffix: subject.state.isNotEmpty
+                      ? GestureDetector(
+                          onTap: () {
+                            subject.state = '';
+                            searchController.text = '';
+                          },
+                          child: const Icon(Icons.close),
+                        )
+                      : Container(),
+                ),
+                controller: searchController,
+                onChanged: (value) {
+                  subject.state = value;
                 },
               ),
-              separatorBuilder: (context, index) => const Divider(height: 1),
-            ),
+              Expanded(
+                child: ListView.separated(
+                  shrinkWrap: true,
+                  itemCount: searchResults.length,
+                  itemBuilder: (context, index) => ListTile(
+                    title: Text(searchResults[index].item.name),
+                    subtitle: Text(searchResults[index].place.name),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: () {
+                      subject.state = '';
+                      searchController.text = '';
+                      FocusScope.of(context).requestFocus(FocusNode());
+                      Navigator.of(context).push<dynamic>(
+                        MaterialPageRoute<dynamic>(
+                          builder: (context) => EditToolScreen(
+                            item: searchResults[index].item,
+                            place: searchResults[index].place,
+                            places: places.state,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  separatorBuilder: (context, index) => const Divider(height: 1),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }
