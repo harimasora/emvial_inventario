@@ -38,7 +38,7 @@ class SearchScreen extends ConsumerStatefulWidget {
 }
 
 class _SearchScreenState extends ConsumerState<SearchScreen> {
-  final searchController = TextEditingController(text: '');
+  final searchController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -63,9 +63,12 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                             subject.state = '';
                             searchController.text = '';
                           },
-                          child: const Icon(Icons.close),
+                          child: const Padding(
+                            padding: EdgeInsets.only(right: 12.0),
+                            child: Icon(Icons.close),
+                          ),
                         )
-                      : Container(),
+                      : const SizedBox.shrink(),
                 ),
                 controller: searchController,
                 onChanged: (value) {
