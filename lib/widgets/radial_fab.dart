@@ -2,17 +2,17 @@ import 'package:emival_inventario/screens/add_place.dart';
 import 'package:emival_inventario/screens/add_tool.dart';
 import 'package:emival_inventario/screens/inventory_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:vector_math/vector_math.dart' show radians;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:vector_math/vector_math.dart' show radians;
 
-class RadialFab extends StatefulWidget {
+class RadialFab extends ConsumerStatefulWidget {
   const RadialFab({Key key}) : super(key: key);
 
   @override
   _RadialFabState createState() => _RadialFabState();
 }
 
-class _RadialFabState extends State<RadialFab> with SingleTickerProviderStateMixin {
+class _RadialFabState extends ConsumerState<RadialFab> with SingleTickerProviderStateMixin {
   AnimationController controller;
 
   @override
@@ -27,7 +27,7 @@ class _RadialFabState extends State<RadialFab> with SingleTickerProviderStateMix
   }
 }
 
-class RadialAnimation extends StatelessWidget {
+class RadialAnimation extends ConsumerWidget {
   final AnimationController controller;
   final Animation<double> degOneTranslationAnimation, degTwoTranslationAnimation, degThreeTranslationAnimation;
   final Animation<double> rotationAnimation;
@@ -51,7 +51,7 @@ class RadialAnimation extends StatelessWidget {
         super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return AnimatedBuilder(
       animation: controller,
       builder: (context, child) {
@@ -80,7 +80,7 @@ class RadialAnimation extends StatelessWidget {
                       color: Colors.white,
                     ),
                     onClick: () {
-                      final places = context.read(placesProvider);
+                      final places = ref.read(placesProvider);
                       _togglerAnimation();
                       // Navigator.of(context).push<dynamic>(MaterialPageRoute<dynamic>(
                       //   builder: (context) => AddToolScreen(places: places.state),

@@ -9,9 +9,9 @@ class ToolsScreen extends ConsumerWidget {
   const ToolsScreen({@required this.placeId, Key key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context, ScopedReader watch) {
-    final places = watch(placesProvider);
-    final place = places.state.firstWhere((element) => element.id == placeId);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final places = ref.watch(placesProvider);
+    final place = places.firstWhere((element) => element.id == placeId);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Ferramentas'),
@@ -47,7 +47,7 @@ class ToolsScreen extends ConsumerWidget {
                         builder: (context) => EditToolScreen(
                           item: place.items[index],
                           place: place,
-                          places: places.state,
+                          places: places,
                         ),
                       ),
                     );

@@ -5,17 +5,17 @@ import 'package:emival_inventario/services/db_service.dart';
 import 'package:emival_inventario/services/notification_service.dart';
 import 'package:emival_inventario/widgets/save_indicator_button.dart';
 import 'package:emival_inventario/widgets/tool_image.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class EditToolScreen extends StatelessWidget {
+class EditToolScreen extends ConsumerWidget {
   final Item item;
   final Place place;
   final List<Place> places;
   const EditToolScreen({@required this.item, @required this.place, @required this.places, Key key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Editar Ferramenta'),
@@ -26,7 +26,7 @@ class EditToolScreen extends StatelessWidget {
               final isDelete = await NotificationService.confirm(
                   context, 'Apagar', 'Tem certeza que deseja apagar esta ferramenta?');
               if (isDelete) {
-                final db = context.read(databaseProvider);
+                final db = ref.read(databaseProvider);
                 final Place origin = place;
                 final originToSave = Place(id: origin.id, name: origin.name, items: origin.items)..items.remove(item);
                 await db.savePlace(originToSave);
@@ -48,7 +48,7 @@ class EditToolScreen extends StatelessWidget {
   }
 }
 
-class EditToolForm extends StatefulWidget {
+class EditToolForm extends ConsumerStatefulWidget {
   final Item item;
   final Place place;
   final List<Place> places;
@@ -58,7 +58,7 @@ class EditToolForm extends StatefulWidget {
   _EditToolFormState createState() => _EditToolFormState();
 }
 
-class _EditToolFormState extends State<EditToolForm> {
+class _EditToolFormState extends ConsumerState<EditToolForm> {
   final _formKey = GlobalKey<FormState>();
 
   String name;
@@ -170,7 +170,7 @@ class _EditToolFormState extends State<EditToolForm> {
       form.save();
       try {
         startLoading();
-        final db = context.read(databaseProvider);
+        final db = ref.read(databaseProvider);
 
         final Place origin = widget.place;
         final Place destination = place;
@@ -199,7 +199,7 @@ class _EditToolFormState extends State<EditToolForm> {
   Future<void> _deleteImage() async {
     final isDelete = await NotificationService.confirm(context, 'Apagar', 'Tem certeza que deseja apagar esta imagem?');
     if (isDelete) {
-      final db = context.read(databaseProvider);
+      final db = ref.read(databaseProvider);
       db.deleteImage(PlaceItem(place: widget.place, item: widget.item));
       setState(() {
         placeItem = PlaceItem(place: placeItem.place, item: placeItem.item.copyWith(imageUrl: ''));

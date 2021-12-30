@@ -25,14 +25,14 @@ class AddPlaceScreen extends StatelessWidget {
   }
 }
 
-class AddPlaceForm extends StatefulWidget {
+class AddPlaceForm extends ConsumerStatefulWidget {
   const AddPlaceForm({Key key}) : super(key: key);
 
   @override
   _AddPlaceFormState createState() => _AddPlaceFormState();
 }
 
-class _AddPlaceFormState extends State<AddPlaceForm> {
+class _AddPlaceFormState extends ConsumerState<AddPlaceForm> {
   final _formKey = GlobalKey<FormState>();
 
   String name;
@@ -92,7 +92,7 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
       form.save();
       try {
         startLoading();
-        final db = context.read(databaseProvider);
+        final db = ref.read(databaseProvider);
         final map = {'name': name};
         await db.addPlace(Place.fromMap(map));
         Navigator.of(context).pop();

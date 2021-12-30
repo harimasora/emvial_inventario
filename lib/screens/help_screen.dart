@@ -1,4 +1,3 @@
-import 'package:drag_and_drop_lists/drag_and_drop_list.dart';
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,9 +11,9 @@ class HelpScreen extends ConsumerWidget {
   const HelpScreen({Key key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context, ScopedReader watch) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final overtextStyle = Theme.of(context).textTheme.overline.copyWith(color: Theme.of(context).primaryColor);
-    final sampleList = watch(sampleReorderProvider);
+    final sampleList = ref.watch(sampleReorderProvider.state);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Ajuda'),
@@ -87,6 +86,7 @@ class HelpScreen extends ConsumerWidget {
 
                       sampleList.state = sampleListCopy;
                     },
+                    onListReorder: (int oldListIndex, int newListIndex) {},
                   ),
                 ),
               ],

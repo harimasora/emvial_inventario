@@ -12,9 +12,9 @@ class PlacesScreen extends ConsumerWidget {
   const PlacesScreen({Key key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context, ScopedReader watch) {
-    final places = watch(placesProvider);
-    final db = watch(databaseProvider);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final places = ref.watch(placesProvider);
+    final db = ref.watch(databaseProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Obras'),
@@ -33,7 +33,7 @@ class PlacesScreen extends ConsumerWidget {
         ],
       ),
       body: ListView.separated(
-        itemCount: places.state.length,
+        itemCount: places.length,
         itemBuilder: (context, index) {
           return Slidable(
             actionPane: const SlidableDrawerActionPane(),
@@ -47,7 +47,7 @@ class PlacesScreen extends ConsumerWidget {
                   Navigator.of(context).push<dynamic>(
                     MaterialPageRoute<dynamic>(
                       builder: (context) => EditPlaceScreen(
-                        place: places.state[index],
+                        place: places[index],
                       ),
                     ),
                   );
@@ -61,21 +61,21 @@ class PlacesScreen extends ConsumerWidget {
                   final isDelete = await NotificationService.confirm(context, 'Apagar',
                       'Deseja realmente apagar esta obra? Todas as ferramentas desta obra também serão apagadas.');
                   if (isDelete == true) {
-                    db.deletePlace(places.state[index]);
+                    db.deletePlace(places[index]);
                   }
                 },
               ),
             ],
             child: ListTile(
               title: Text(
-                places.state[index].name ?? '',
+                places[index].name ?? '',
               ),
-              subtitle: Text('Ferramentas ${places.state[index].items.length}' ?? ''),
+              subtitle: Text('Ferramentas ${places[index].items.length}' ?? ''),
               trailing: const Icon(Icons.chevron_right),
               onTap: () {
                 Navigator.of(context).push<dynamic>(
                   MaterialPageRoute<dynamic>(
-                    builder: (context) => ToolsScreen(placeId: places.state[index].id),
+                    builder: (context) => ToolsScreen(placeId: places[index].id),
                   ),
                 );
               },

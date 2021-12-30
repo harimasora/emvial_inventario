@@ -20,9 +20,9 @@ class HomeScreen extends ConsumerWidget {
   const HomeScreen({Key key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context, ScopedReader watch) {
-    final currentTab = watch(homeTabProvider);
-    final navigatorKeys = watch(navigatorKeysProvider);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final currentTab = ref.watch(homeTabProvider.state);
+    final navigatorKeys = ref.watch(navigatorKeysProvider);
     return WillPopScope(
       onWillPop: () async => !await navigatorKeys[currentTab.state].currentState.maybePop(),
       child: Scaffold(

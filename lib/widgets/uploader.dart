@@ -5,7 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class Uploader extends StatefulWidget {
+class Uploader extends ConsumerStatefulWidget {
   final File file;
   final PlaceItem placeItem;
   const Uploader({@required this.file, @required this.placeItem, Key key}) : super(key: key);
@@ -14,7 +14,7 @@ class Uploader extends StatefulWidget {
   _UploaderState createState() => _UploaderState();
 }
 
-class _UploaderState extends State<Uploader> {
+class _UploaderState extends ConsumerState<Uploader> {
   final FirebaseStorage _storage = FirebaseStorage.instanceFor(bucket: 'gs://emival-engenharia-inventario.appspot.com');
 
   UploadTask _task;
@@ -29,7 +29,7 @@ class _UploaderState extends State<Uploader> {
       _task.whenComplete(() async {
         final downloadUrl = await _task.snapshot.ref.getDownloadURL();
         final newItem = widget.placeItem.item.copyWith(imageUrl: downloadUrl);
-        final db = context.read(databaseProvider);
+        final db = ref.read(databaseProvider);
         db.savePlaceItem(PlaceItem(place: widget.placeItem.place, item: newItem));
         Navigator.of(context).pop(downloadUrl);
       });

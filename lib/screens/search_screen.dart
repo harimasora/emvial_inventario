@@ -12,7 +12,7 @@ final placesItemsProvider = Provider<List<PlaceItem>>((ref) {
   final places = ref.watch(placesProvider);
   final List<PlaceItem> placeItems = [];
 
-  for (final place in places.state) {
+  for (final place in places) {
     for (final item in place.items) {
       placeItems.add(PlaceItem(place: place, item: item));
     }
@@ -27,26 +27,26 @@ final searchResultsProvider = Provider<List<PlaceItem>>((ref) {
   final placesItems = ref.watch(placesItemsProvider);
   final subject = ref.watch(searchTextProvider);
 
-  return placesItems.where((v) => v.item.name.toLowerCase().contains(subject.state.toLowerCase())).toList();
+  return placesItems.where((v) => v.item.name.toLowerCase().contains(subject.toLowerCase())).toList();
 });
 
-class SearchScreen extends StatefulWidget {
+class SearchScreen extends ConsumerStatefulWidget {
   const SearchScreen({Key key}) : super(key: key);
 
   @override
   _SearchScreenState createState() => _SearchScreenState();
 }
 
-class _SearchScreenState extends State<SearchScreen> {
+class _SearchScreenState extends ConsumerState<SearchScreen> {
   final searchController = TextEditingController(text: '');
 
   @override
   Widget build(BuildContext context) {
     return Consumer(
       builder: (context, watch, child) {
-        final places = watch(placesProvider);
-        final searchResults = watch(searchResultsProvider);
-        final subject = watch(searchTextProvider);
+        final places = ref.watch(placesProvider);
+        final searchResults = ref.watch(searchResultsProvider);
+        final subject = ref.watch(searchTextProvider.state);
         return Scaffold(
           appBar: AppBar(
             title: const Text('Buscar'),
@@ -89,7 +89,7 @@ class _SearchScreenState extends State<SearchScreen> {
                           builder: (context) => EditToolScreen(
                             item: searchResults[index].item,
                             place: searchResults[index].place,
-                            places: places.state,
+                            places: places,
                           ),
                         ),
                       );

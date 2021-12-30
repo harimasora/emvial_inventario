@@ -26,7 +26,7 @@ class EditPlaceScreen extends StatelessWidget {
   }
 }
 
-class EditPlaceForm extends StatefulWidget {
+class EditPlaceForm extends ConsumerStatefulWidget {
   final Place place;
   const EditPlaceForm({@required this.place, Key key}) : super(key: key);
 
@@ -34,7 +34,7 @@ class EditPlaceForm extends StatefulWidget {
   _EditPlaceFormState createState() => _EditPlaceFormState();
 }
 
-class _EditPlaceFormState extends State<EditPlaceForm> {
+class _EditPlaceFormState extends ConsumerState<EditPlaceForm> {
   final _formKey = GlobalKey<FormState>();
 
   String name;
@@ -101,7 +101,7 @@ class _EditPlaceFormState extends State<EditPlaceForm> {
       form.save();
       try {
         startLoading();
-        final db = context.read(databaseProvider);
+        final db = ref.read(databaseProvider);
         final place = widget.place;
         final placeToSave = Place(id: place.id, name: name, items: place.items);
         await db.savePlace(placeToSave);

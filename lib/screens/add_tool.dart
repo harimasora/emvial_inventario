@@ -5,8 +5,8 @@ import 'package:emival_inventario/services/db_service.dart';
 import 'package:emival_inventario/services/notification_service.dart';
 import 'package:emival_inventario/widgets/save_indicator_button.dart';
 import 'package:emival_inventario/widgets/tool_image.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class AddToolScreen extends StatelessWidget {
   final Place place;
@@ -30,7 +30,7 @@ class AddToolScreen extends StatelessWidget {
   }
 }
 
-class AddToolForm extends StatefulWidget {
+class AddToolForm extends ConsumerStatefulWidget {
   final Place place;
   const AddToolForm({@required this.place, Key key}) : super(key: key);
 
@@ -38,7 +38,7 @@ class AddToolForm extends StatefulWidget {
   _AddToolFormState createState() => _AddToolFormState();
 }
 
-class _AddToolFormState extends State<AddToolForm> {
+class _AddToolFormState extends ConsumerState<AddToolForm> {
   final _formKey = GlobalKey<FormState>();
 
   String name;
@@ -54,7 +54,7 @@ class _AddToolFormState extends State<AddToolForm> {
   @override
   void initState() {
     super.initState();
-    final db = context.read(databaseProvider);
+    final db = ref.read(databaseProvider);
     place = widget.place;
     placeItem = PlaceItem(place: widget.place, item: Item(id: db.randomDocumentId, imageUrl: ''));
   }
@@ -124,7 +124,7 @@ class _AddToolFormState extends State<AddToolForm> {
       form.save();
       try {
         startLoading();
-        final db = context.read(databaseProvider);
+        final db = ref.read(databaseProvider);
         final placeToSave = Place(id: place.id, name: place.name, items: place.items);
         placeToSave.items.removeWhere((item) => item.id == placeItem.item.id);
         placeToSave.items.add(placeItem.item.copyWith(name: name));
@@ -143,7 +143,7 @@ class _AddToolFormState extends State<AddToolForm> {
   Future<void> _deleteImage() async {
     final isDelete = await NotificationService.confirm(context, 'Apagar', 'Tem certeza que deseja apagar esta imagem?');
     if (isDelete) {
-      final db = context.read(databaseProvider);
+      final db = ref.read(databaseProvider);
       db.deleteImage(PlaceItem(place: widget.place, item: placeItem.item));
       setState(() {
         placeItem = PlaceItem(place: placeItem.place, item: placeItem.item.copyWith(imageUrl: ''));

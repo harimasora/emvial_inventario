@@ -22,16 +22,16 @@ final placesProvider = StateProvider<List<Place>>((ref) {
 
 class InventoryScreen extends ConsumerWidget {
   @override
-  Widget build(BuildContext context, ScopedReader watch) {
-    final places = watch(placesProvider);
-    final inventory = watch(inventoryStreamProvider);
-    final db = watch(databaseProvider);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final places = ref.watch(placesProvider.state);
+    final inventory = ref.watch(inventoryStreamProvider);
+    final db = ref.watch(databaseProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Inventário'),
         actions: [
           IconButton(
-            icon: Icon(Icons.help),
+            icon: const Icon(Icons.help),
             onPressed: () {
               Navigator.of(context).push<dynamic>(MaterialPageRoute<dynamic>(
                 builder: (context) => const HelpScreen(),
@@ -173,17 +173,16 @@ class InventoryScreen extends ConsumerWidget {
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 0,
-        items: [
-          const BottomNavigationBarItem(
+        items: const [
+          BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Obras',
           ),
-          const BottomNavigationBarItem(
+          BottomNavigationBarItem(
             icon: Icon(Icons.search),
             label: 'Busca',
           ),
-          const BottomNavigationBarItem(
+          BottomNavigationBarItem(
             icon: Icon(Icons.settings),
             label: 'Configurações',
           ),
