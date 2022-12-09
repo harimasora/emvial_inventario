@@ -51,22 +51,24 @@ class HelpScreen extends ConsumerWidget {
                           sampleList.state.length,
                           (innerIndex) => DragAndDropItem(
                             child: Slidable(
-                              actionPane: const SlidableDrawerActionPane(),
-                              actionExtentRatio: 0.20,
-                              secondaryActions: <Widget>[
-                                IconSlideAction(
-                                  caption: 'Editar',
-                                  color: Colors.black45,
-                                  icon: Icons.edit,
-                                  onTap: () {},
-                                ),
-                                IconSlideAction(
-                                  caption: 'Apagar',
-                                  color: Colors.red,
-                                  icon: Icons.delete,
-                                  onTap: () {},
-                                ),
-                              ],
+                              endActionPane: ActionPane(
+                                motion: const DrawerMotion(),
+                                extentRatio: 0.2,
+                                children: [
+                                  SlidableAction(
+                                    label: 'Editar',
+                                    backgroundColor: Colors.black45,
+                                    icon: Icons.edit,
+                                    onPressed: (context) {},
+                                  ),
+                                  SlidableAction(
+                                    label: 'Apagar',
+                                    backgroundColor: Colors.red,
+                                    icon: Icons.delete,
+                                    onPressed: (context) {},
+                                  ),
+                                ],
+                              ),
                               child: ListTile(
                                 title: Text(
                                   sampleList.state[innerIndex],

@@ -51,32 +51,34 @@ class InventoryScreen extends ConsumerWidget {
                   canDrag: false,
                   contentsWhenEmpty: const Text('Não há ferramentas nesta obra'),
                   header: Slidable(
-                    actionPane: const SlidableDrawerActionPane(),
-                    actionExtentRatio: 0.20,
-                    secondaryActions: <Widget>[
-                      IconSlideAction(
-                        caption: 'Editar',
-                        color: Colors.black45,
-                        icon: Icons.edit,
-                        onTap: () {
-                          Navigator.of(context).push<dynamic>(
-                            MaterialPageRoute<dynamic>(
-                              builder: (context) => EditPlaceScreen(
-                                place: places.state[index],
+                    endActionPane: ActionPane(
+                      motion: const DrawerMotion(),
+                      extentRatio: 0.2,
+                      children: [
+                        SlidableAction(
+                          label: 'Editar',
+                          backgroundColor: Colors.black45,
+                          icon: Icons.edit,
+                          onPressed: (context) {
+                            Navigator.of(context).push<dynamic>(
+                              MaterialPageRoute<dynamic>(
+                                builder: (context) => EditPlaceScreen(
+                                  place: places.state[index],
+                                ),
                               ),
-                            ),
-                          );
-                        },
-                      ),
-                      IconSlideAction(
-                        caption: 'Apagar',
-                        color: Colors.red,
-                        icon: Icons.delete,
-                        onTap: () {
-                          db.deletePlace(places.state[index]);
-                        },
-                      ),
-                    ],
+                            );
+                          },
+                        ),
+                        SlidableAction(
+                          label: 'Apagar',
+                          backgroundColor: Colors.red,
+                          icon: Icons.delete,
+                          onPressed: (context) {
+                            db.deletePlace(places.state[index]);
+                          },
+                        ),
+                      ],
+                    ),
                     child: ListTile(
                       tileColor: Colors.grey[300],
                       title: Text(places.state[index].name),
@@ -87,33 +89,36 @@ class InventoryScreen extends ConsumerWidget {
                     places.state[index].items.length,
                     (innerIndex) => DragAndDropItem(
                       child: Slidable(
-                        actionPane: const SlidableDrawerActionPane(),
-                        actionExtentRatio: 0.20,
-                        secondaryActions: <Widget>[
-                          IconSlideAction(
-                            caption: 'Editar',
-                            color: Colors.black45,
-                            icon: Icons.edit,
-                            onTap: () {
-                              Navigator.of(context).push<dynamic>(
-                                MaterialPageRoute<dynamic>(
-                                  builder: (context) => EditToolScreen(
+                        endActionPane: ActionPane(
+                          motion: const DrawerMotion(),
+                          extentRatio: 0.2,
+                          children: [
+                            SlidableAction(
+                              label: 'Editar',
+                              backgroundColor: Colors.black45,
+                              icon: Icons.edit,
+                              onPressed: (context) {
+                                Navigator.of(context).push<dynamic>(
+                                  MaterialPageRoute<dynamic>(
+                                    builder: (context) => EditToolScreen(
                                       item: places.state[index].items[innerIndex],
                                       place: places.state[index],
-                                      places: places.state),
-                                ),
-                              );
-                            },
-                          ),
-                          IconSlideAction(
-                            caption: 'Apagar',
-                            color: Colors.red,
-                            icon: Icons.delete,
-                            onTap: () {
-                              db.removeItemFromPlace(places.state[index], places.state[index].items[innerIndex]);
-                            },
-                          ),
-                        ],
+                                      places: places.state,
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                            SlidableAction(
+                              label: 'Apagar',
+                              backgroundColor: Colors.red,
+                              icon: Icons.delete,
+                              onPressed: (context) {
+                                db.removeItemFromPlace(places.state[index], places.state[index].items[innerIndex]);
+                              },
+                            ),
+                          ],
+                        ),
                         child: ListTile(
                           title: Text(
                             places.state[index].items[innerIndex].name,
@@ -190,9 +195,5 @@ class InventoryScreen extends ConsumerWidget {
       ),
       floatingActionButton: const RadialFab(),
     );
-  }
-
-  void _showSnackBar(BuildContext context, String text) {
-    Scaffold.of(context).showSnackBar(SnackBar(content: Text(text)));
   }
 }

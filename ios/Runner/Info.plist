@@ -47,5 +47,7 @@
 	<string>I need to access your Camera</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>I need to access your Photo Library</string>
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
 </dict>
 </plist>

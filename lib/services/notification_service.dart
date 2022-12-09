@@ -13,12 +13,14 @@ class NotificationService {
           title: Text(title),
           content: Text(body),
           actions: <Widget>[
-            FlatButton(
+            TextButton(
               onPressed: () => Navigator.of(innerContext).pop(false),
               child: const Text('Cancelar'),
             ),
-            FlatButton(
-              color: Theme.of(innerContext).errorColor,
+            TextButton(
+              style: TextButton.styleFrom(
+                backgroundColor: Theme.of(innerContext).errorColor,
+              ),
               onPressed: () => Navigator.of(innerContext).pop(true),
               child: Text(deleteLabel ?? 'Apagar', style: const TextStyle(color: Colors.white)),
             ),
@@ -40,7 +42,7 @@ class NotificationService {
           title: Text(title),
           content: Text(body),
           actions: <Widget>[
-            FlatButton(
+            TextButton(
               onPressed: () => Navigator.of(context).pop(),
               child: const Text('Ok'),
             ),

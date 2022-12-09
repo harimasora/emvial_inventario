@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:emival_inventario/models/place_item.dart';
 import 'package:emival_inventario/widgets/uploader.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
@@ -21,23 +22,31 @@ class _ImageCaptureState extends State<ImageCapture> {
 
   /// Cropper plugin
   Future<void> _cropImage() async {
-    final File cropped = await ImageCropper.cropImage(
+    final cropped = await ImageCropper().cropImage(
       sourcePath: _imageFile.path,
       aspectRatio: const CropAspectRatio(ratioX: 1.0, ratioY: 1.0),
-      maxWidth: 512,
-      maxHeight: 512,
-      androidUiSettings: const AndroidUiSettings(
-          toolbarColor: Colors.purple, toolbarWidgetColor: Colors.white, toolbarTitle: 'Recortar'),
+      maxWidth: 1024,
+      maxHeight: 1024,
+      uiSettings: [
+        AndroidUiSettings(
+          toolbarColor: Colors.purple,
+          toolbarWidgetColor: Colors.white,
+          toolbarTitle: 'Recortar',
+        ),
+        WebUiSettings(
+          context: context,
+        )
+      ],
     );
 
     setState(() {
-      _imageFile = cropped ?? _imageFile;
+      _imageFile = File(cropped.path) ?? _imageFile;
     });
   }
 
   /// Select an image via gallery or camera
   Future<void> _pickImage(ImageSource source) async {
-    final pickedFile = await _picker.getImage(
+    final pickedFile = await _picker.pickImage(
       source: source,
       maxHeight: 1024,
       maxWidth: 1024,
@@ -81,14 +90,14 @@ class _ImageCaptureState extends State<ImageCapture> {
           ),
           // Preview the image and crop it
           if (_imageFile != null) ...[
-            Image.file(_imageFile),
+            if (kIsWeb) HtmlElementView(viewType: _imageFile.path) else Image.file(_imageFile),
             Row(
               children: <Widget>[
-                FlatButton(
+                TextButton(
                   onPressed: _cropImage,
                   child: const Icon(Icons.crop),
                 ),
-                FlatButton(
+                TextButton(
                   onPressed: _clear,
                   child: const Icon(Icons.refresh),
                 ),

@@ -15,7 +15,7 @@ class Uploader extends ConsumerStatefulWidget {
 }
 
 class _UploaderState extends ConsumerState<Uploader> {
-  final FirebaseStorage _storage = FirebaseStorage.instanceFor(bucket: 'gs://emival-engenharia-inventario.appspot.com');
+  final FirebaseStorage _storage = FirebaseStorage.instance;
 
   UploadTask _task;
 
@@ -25,6 +25,7 @@ class _UploaderState extends ConsumerState<Uploader> {
     final String filePath = 'tools/${widget.placeItem.item.id}.png';
 
     setState(() {
+      // TODO: Fix upload
       _task = _storage.ref().child(filePath).putFile(widget.file);
       _task.whenComplete(() async {
         final downloadUrl = await _task.snapshot.ref.getDownloadURL();
@@ -53,13 +54,13 @@ class _UploaderState extends ConsumerState<Uploader> {
                 if (state == TaskState.success) const Text('Upload concluído! 🎉🎉🎉'),
 
                 if (state == TaskState.paused)
-                  FlatButton(
+                  TextButton(
                     onPressed: _task.resume,
                     child: const Icon(Icons.play_arrow),
                   ),
 
                 if (state == TaskState.running)
-                  FlatButton(
+                  TextButton(
                     onPressed: _task.pause,
                     child: const Icon(Icons.pause),
                   ),
@@ -72,7 +73,7 @@ class _UploaderState extends ConsumerState<Uploader> {
           });
     } else {
       // Allows user to decide when to start the upload
-      return FlatButton.icon(
+      return TextButton.icon(
         label: const Text('Fazer upload'),
         icon: const Icon(Icons.cloud_upload),
         onPressed: _startUpload,

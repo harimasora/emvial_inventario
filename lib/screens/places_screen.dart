@@ -36,36 +36,38 @@ class PlacesScreen extends ConsumerWidget {
         itemCount: places.length,
         itemBuilder: (context, index) {
           return Slidable(
-            actionPane: const SlidableDrawerActionPane(),
-            actionExtentRatio: 0.20,
-            secondaryActions: <Widget>[
-              IconSlideAction(
-                caption: 'Editar',
-                color: Colors.black45,
-                icon: Icons.edit,
-                onTap: () {
-                  Navigator.of(context).push<dynamic>(
-                    MaterialPageRoute<dynamic>(
-                      builder: (context) => EditPlaceScreen(
-                        place: places[index],
+            endActionPane: ActionPane(
+              motion: const DrawerMotion(),
+              extentRatio: 0.2,
+              children: [
+                SlidableAction(
+                  label: 'Editar',
+                  backgroundColor: Colors.black45,
+                  icon: Icons.edit,
+                  onPressed: (context) {
+                    Navigator.of(context).push<dynamic>(
+                      MaterialPageRoute<dynamic>(
+                        builder: (context) => EditPlaceScreen(
+                          place: places[index],
+                        ),
                       ),
-                    ),
-                  );
-                },
-              ),
-              IconSlideAction(
-                caption: 'Apagar',
-                color: Colors.red,
-                icon: Icons.delete,
-                onTap: () async {
-                  final isDelete = await NotificationService.confirm(context, 'Apagar',
-                      'Deseja realmente apagar esta obra? Todas as ferramentas desta obra também serão apagadas.');
-                  if (isDelete == true) {
-                    db.deletePlace(places[index]);
-                  }
-                },
-              ),
-            ],
+                    );
+                  },
+                ),
+                SlidableAction(
+                  label: 'Apagar',
+                  backgroundColor: Colors.red,
+                  icon: Icons.delete,
+                  onPressed: (context) async {
+                    final isDelete = await NotificationService.confirm(context, 'Apagar',
+                        'Deseja realmente apagar esta obra? Todas as ferramentas desta obra também serão apagadas.');
+                    if (isDelete == true) {
+                      db.deletePlace(places[index]);
+                    }
+                  },
+                ),
+              ],
+            ),
             child: ListTile(
               title: Text(
                 places[index].name ?? '',
