@@ -1,9 +1,10 @@
 import 'package:emival_inventario/screens/places_screen.dart';
 import 'package:emival_inventario/screens/search_screen.dart';
+import 'package:emival_inventario/screens/settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-enum TabItem { inventory, search }
+enum TabItem { inventory, search, settings }
 
 final homeTabProvider = StateProvider<TabItem>((ref) {
   return TabItem.inventory;
@@ -13,6 +14,7 @@ final navigatorKeysProvider = Provider<Map<TabItem, GlobalKey<NavigatorState>>>(
   return {
     TabItem.inventory: GlobalKey<NavigatorState>(),
     TabItem.search: GlobalKey<NavigatorState>(),
+    TabItem.settings: GlobalKey<NavigatorState>(),
   };
 });
 
@@ -43,6 +45,14 @@ class HomeScreen extends ConsumerWidget {
                 '/': (context) => const SearchScreen(),
               },
               navigatorKeys,
+            ),
+            _buildOffstageNavigator(
+              TabItem.settings,
+              currentTab.state,
+              {
+                '/': (context) => const SettingsScreen(),
+              },
+              navigatorKeys,
             )
           ],
         ),
@@ -58,6 +68,10 @@ class HomeScreen extends ConsumerWidget {
             BottomNavigationBarItem(
               icon: Icon(Icons.search),
               label: 'Busca',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.settings),
+              label: 'Ajustes',
             ),
           ],
         ),
