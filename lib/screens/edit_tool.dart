@@ -119,6 +119,7 @@ class _EditToolFormState extends ConsumerState<EditToolForm> {
             ),
             const SizedBox(height: 8),
             DropdownButtonFormField<Place>(
+              iconSize: 23,
               decoration: const InputDecoration(
                 labelText: 'Local',
               ),
