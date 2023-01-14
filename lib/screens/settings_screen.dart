@@ -1,3 +1,4 @@
+import 'package:emival_inventario/screens/logs_screen.dart';
 import 'package:emival_inventario/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -9,21 +10,30 @@ class SettingsScreen extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(title: const Text('Ajustes')),
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const CurrentUser(),
-            const SizedBox(height: 24),
-            OutlinedButton.icon(
-              onPressed: () {
-                ref.read(loginControllerProvider.notifier).signOut();
-              },
-              icon: const Icon(Icons.logout),
-              label: const Text('Sair'),
-            ),
-          ],
-        ),
+      body: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ListTile(
+            title: const Text('Registros'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () {
+              Navigator.of(context).push<dynamic>(MaterialPageRoute<dynamic>(
+                builder: (context) => const LogsScreen(),
+              ));
+            },
+          ),
+          const Divider(),
+          const SizedBox(height: 24),
+          const CurrentUser(),
+          const SizedBox(height: 24),
+          OutlinedButton.icon(
+            onPressed: () {
+              ref.read(loginControllerProvider.notifier).signOut();
+            },
+            icon: const Icon(Icons.logout),
+            label: const Text('Sair'),
+          ),
+        ],
       ),
     );
   }

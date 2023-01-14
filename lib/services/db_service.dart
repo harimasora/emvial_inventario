@@ -8,6 +8,8 @@ import 'package:emival_inventario/services/firestore_service.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../models/system_log.dart';
+
 final databaseProvider = Provider<DatabaseService>((ref) => DatabaseService());
 
 final inventoryStreamProvider = StreamProvider<List<Place>>((ref) {
@@ -18,6 +20,16 @@ final inventoryStreamProvider = StreamProvider<List<Place>>((ref) {
   }
 
   return ref.watch(databaseProvider).streamPlaces();
+});
+
+final logsStreamProvider = StreamProvider<List<SystemLog>>((ref) {
+  final db = ref.watch(databaseProvider);
+
+  if (db == null) {
+    return null;
+  }
+
+  return ref.watch(databaseProvider).streamLogs();
 });
 
 final inventoryProvider = FutureProvider<List<Place>>((ref) async {
@@ -38,6 +50,11 @@ class DatabaseService {
   Stream<List<Place>> streamPlaces() => _service.collectionStream(
         path: FirestorePath.places,
         builder: (data, documentId) => Place.fromMap(<dynamic, dynamic>{...data, 'id': documentId}),
+      );
+
+  Stream<List<SystemLog>> streamLogs() => _service.collectionStream(
+        path: FirestorePath.logs,
+        builder: (data, documentId) => SystemLog.fromMap(<dynamic, dynamic>{...data}),
       );
 
   Future<List<Place>> getPlaces() => _service.collectionGet(

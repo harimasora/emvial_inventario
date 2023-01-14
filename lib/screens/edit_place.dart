@@ -4,6 +4,8 @@ import 'package:emival_inventario/widgets/save_indicator_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../services/logger_service.dart';
+
 class EditPlaceScreen extends StatelessWidget {
   final Place place;
   const EditPlaceScreen({@required this.place, Key key}) : super(key: key);
@@ -105,6 +107,7 @@ class _EditPlaceFormState extends ConsumerState<EditPlaceForm> {
         final place = widget.place;
         final placeToSave = Place(id: place.id, name: name, items: place.items);
         await db.savePlace(placeToSave);
+        await LoggerService().logEditPlace(place, placeToSave);
         Navigator.of(context).pop();
       } on Exception catch (e) {
         debugPrint(e.toString());

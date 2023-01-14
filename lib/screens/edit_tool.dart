@@ -8,6 +8,8 @@ import 'package:emival_inventario/widgets/tool_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../services/logger_service.dart';
+
 class EditToolScreen extends ConsumerWidget {
   final Item item;
   final Place place;
@@ -30,6 +32,7 @@ class EditToolScreen extends ConsumerWidget {
                 final Place origin = place;
                 final originToSave = Place(id: origin.id, name: origin.name, items: origin.items)..items.remove(item);
                 await db.savePlace(originToSave);
+                await LoggerService().logRemoveItem(item, origin);
                 Navigator.of(context).pop();
               }
             },
@@ -180,11 +183,16 @@ class _EditToolFormState extends ConsumerState<EditToolForm> {
             ..items.removeWhere((item) => item.id == placeItem.item.id)
             ..items.add((placeItem.item.copyWith(name: name)));
           await db.savePlace(destinationToSave);
+          await LoggerService().logEditItem(placeItem.item.copyWith(name: name), origin);
         } else {
           final originToSave = Place(id: origin.id, name: origin.name, items: origin.items)..items.remove(widget.item);
           final destinationToSave = Place(id: destination.id, name: destination.name, items: destination.items)
             ..items.add((placeItem.item.copyWith(name: name)));
-          await Future.wait([db.savePlace(originToSave), db.savePlace(destinationToSave)]);
+          await Future.wait([
+            db.savePlace(originToSave),
+            db.savePlace(destinationToSave),
+            LoggerService().logMovedItem(placeItem.item.copyWith(name: name), originToSave, destinationToSave),
+          ]);
         }
         Navigator.of(context).pop();
       } on Exception catch (e) {
