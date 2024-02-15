@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../services/db_service.dart';
 
 class LogsScreen extends ConsumerWidget {
-  const LogsScreen({Key key}) : super(key: key);
+  const LogsScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

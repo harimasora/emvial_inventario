@@ -5,18 +5,18 @@ import 'package:flutter/material.dart';
 
 class ToolImage extends StatelessWidget {
   const ToolImage({
-    Key key,
-    @required this.placeItem,
-    this.onDelete,
-    this.onUploadComplete,
+    Key? key,
+    required this.placeItem,
+    required this.onDelete,
+    required this.onUploadComplete,
   }) : super(key: key);
-  final PlaceItem placeItem;
+  final PlaceItem? placeItem;
   final void Function() onDelete;
   final void Function(String downloadUrl) onUploadComplete;
 
   @override
   Widget build(BuildContext context) {
-    final item = placeItem.item;
+    final item = placeItem?.item;
     final imageSideSize = MediaQuery.of(context).size.width / 3;
     return Stack(
       children: [
@@ -27,7 +27,7 @@ class ToolImage extends StatelessWidget {
           ),
           width: imageSideSize,
           height: imageSideSize,
-          child: item.imageUrl.isEmpty
+          child: item?.imageUrl.isEmpty == true
               ? IconButton(
                   icon: const Icon(
                     Icons.photo,
@@ -37,7 +37,7 @@ class ToolImage extends StatelessWidget {
                     final String downloadUrl = await Navigator.of(context).push<String>(
                           MaterialPageRoute<String>(
                             builder: (_) => ImageCapture(
-                              placeItem: placeItem,
+                              placeItem: placeItem!,
                             ),
                           ),
                         ) ??
@@ -53,7 +53,7 @@ class ToolImage extends StatelessWidget {
                       builder: (context) => Scaffold(
                         appBar: AppBar(),
                         body: ExtendedImage.network(
-                          item.imageUrl,
+                          item?.imageUrl ?? '',
                           fit: BoxFit.contain,
                           //enableLoadState: false,
                           mode: ExtendedImageMode.gesture,
@@ -72,13 +72,13 @@ class ToolImage extends StatelessWidget {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(8),
                     child: Image.network(
-                      item.imageUrl,
+                      item?.imageUrl ?? '',
                       fit: BoxFit.cover,
                     ),
                   ),
                 ),
         ),
-        if (item.imageUrl.isNotEmpty)
+        if (item?.imageUrl.isNotEmpty == true)
           Positioned(
             top: 0,
             right: 0,

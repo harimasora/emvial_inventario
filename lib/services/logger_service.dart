@@ -25,11 +25,11 @@ class LoggerService {
       text: '$_formattedDate $username ADICIONOU $itemName em $placeName',
       itemId: item.id,
       placeId: place.id,
-      userId: _auth.currentUser?.uid,
+      userId: _auth.currentUser?.uid ?? '',
       timestamp: DateTime.now(),
     );
 
-    _service.collectionAdd(path: 'logs', data: systemLog.toMap());
+    _service.collectionAdd(path: 'logs', data: systemLog.toJson());
   }
 
   Future<void> logEditItem(Item item, Place place) async {
@@ -40,10 +40,10 @@ class LoggerService {
       text: '$_formattedDate $username ALTEROU $itemName em $placeName',
       itemId: item.id,
       placeId: place.id,
-      userId: _auth.currentUser?.uid,
+      userId: _auth.currentUser?.uid ?? '',
       timestamp: DateTime.now(),
     );
-    _service.collectionAdd(path: 'logs', data: systemLog.toMap());
+    _service.collectionAdd(path: 'logs', data: systemLog.toJson());
   }
 
   Future<void> logEditPlace(Place placeOrigin, Place placeDestination) async {
@@ -53,10 +53,10 @@ class LoggerService {
     final systemLog = SystemLog(
       text: '$_formattedDate $username ALTEROU $placeOriginName para $placeDestinationName',
       placeId: placeOrigin.id,
-      userId: _auth.currentUser?.uid,
+      userId: _auth.currentUser?.uid ?? '',
       timestamp: DateTime.now(),
     );
-    _service.collectionAdd(path: 'logs', data: systemLog.toMap());
+    _service.collectionAdd(path: 'logs', data: systemLog.toJson());
   }
 
   Future<void> logMovedItem(Item item, Place placeOrigin, Place placeDestination) async {
@@ -68,10 +68,10 @@ class LoggerService {
       text: '$_formattedDate $username MOVEU $itemName de $placeOriginName para $placeDestinationName',
       itemId: item.id,
       placeId: placeDestination.id,
-      userId: _auth.currentUser?.uid,
+      userId: _auth.currentUser?.uid ?? '',
       timestamp: DateTime.now(),
     );
-    _service.collectionAdd(path: 'logs', data: systemLog.toMap());
+    _service.collectionAdd(path: 'logs', data: systemLog.toJson());
   }
 
   Future<void> logRemoveItem(Item item, Place place) async {
@@ -82,9 +82,9 @@ class LoggerService {
       text: '$_formattedDate $username APAGOU $itemName de $placeName',
       itemId: item.id,
       placeId: place.id,
-      userId: _auth.currentUser?.uid,
+      userId: _auth.currentUser?.uid ?? '',
       timestamp: DateTime.now(),
     );
-    _service.collectionAdd(path: 'logs', data: systemLog.toMap());
+    _service.collectionAdd(path: 'logs', data: systemLog.toJson());
   }
 }

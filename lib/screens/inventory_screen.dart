@@ -132,7 +132,7 @@ class InventoryScreen extends ConsumerWidget {
             ),
             onItemReorder: (int oldItemIndex, int oldListIndex, int newItemIndex, int newListIndex) {
               final placesCopy =
-                  List<Place>.generate(places.state.length, (index) => Place.fromMap(places.state[index].toMap()));
+                  List<Place>.generate(places.state.length, (index) => Place.fromJson(places.state[index].toJson()));
               final movedItem = placesCopy[oldListIndex].items.removeAt(oldItemIndex);
               placesCopy[newListIndex].items.insert(newItemIndex, movedItem);
 
@@ -147,7 +147,7 @@ class InventoryScreen extends ConsumerWidget {
             },
             onListReorder: (int oldListIndex, int newListIndex) {
               final placesCopy =
-                  List<Place>.generate(places.state.length, (index) => Place.fromMap(places.state[index].toMap()));
+                  List<Place>.generate(places.state.length, (index) => Place.fromJson(places.state[index].toJson()));
               final movedList = placesCopy.removeAt(oldListIndex);
               placesCopy.insert(newListIndex, movedList);
               places.state = placesCopy;

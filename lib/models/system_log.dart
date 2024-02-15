@@ -1,50 +1,40 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class SystemLog {
-  final String text;
-  final String itemId;
-  final String placeId;
-  final String userId;
-  final DateTime timestamp;
+part 'system_log.freezed.dart';
+part 'system_log.g.dart';
 
-  SystemLog({this.text, this.itemId, this.placeId, this.userId, this.timestamp});
+@freezed
+class SystemLog with _$SystemLog {
+  const factory SystemLog({
+    @Default('') String text,
+    @Default('') String itemId,
+    @Default('') String placeId,
+    @Default('') String userId,
+    @ServerTimestampConverter() required DateTime timestamp,
+  }) = _SystemLog;
 
-  factory SystemLog.fromMap(Map data) {
-    if (data == null) {
-      return SystemLog();
+  factory SystemLog.fromJson(Map<String, dynamic> json) => _$SystemLogFromJson(json);
+}
+
+class ServerTimestampConverter implements JsonConverter<DateTime, Object?> {
+  const ServerTimestampConverter();
+
+  @override
+  DateTime fromJson(Object? json) {
+    try {
+      if (json.runtimeType is Timestamp) {
+        return Timestamp((json as Timestamp).seconds, json.nanoseconds).toDate();
+      } else if (json.runtimeType == String) {
+        return Timestamp.fromDate(DateTime.parse(json as String)).toDate();
+      } else {
+        return DateTime.now();
+      }
+    } catch (err) {
+      return DateTime.now();
     }
-
-    return SystemLog(
-      text: data['text'] as String ?? '',
-      itemId: data['itemId'] as String ?? '',
-      placeId: data['placeId'] as String ?? '',
-      userId: data['userId'] as String ?? '',
-      timestamp: (data['timestamp'] as Timestamp).toDate(),
-    );
-  }
-
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'text': text,
-      'itemId': itemId,
-      'placeId': placeId,
-      'userId': userId,
-      'timestamp': timestamp,
-    };
-  }
-
-  SystemLog copyWith({String text, String itemId, String placeId, String userId, DateTime timestamp}) {
-    return SystemLog(
-      text: text ?? this.text,
-      itemId: itemId ?? this.itemId,
-      placeId: placeId ?? this.placeId,
-      userId: userId ?? this.userId,
-      timestamp: timestamp ?? this.timestamp,
-    );
   }
 
   @override
-  String toString() {
-    return 'text: $text, timestamp: $timestamp, itemId: $itemId, placeId: $placeId, userId: $userId';
-  }
+  Object? toJson(DateTime dateTime) => dateTime;
 }

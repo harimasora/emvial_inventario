@@ -7,7 +7,7 @@ final authRepositoryProvider = Provider<AuthRepository>((ref) {
   return AuthRepository(FirebaseAuth.instance);
 });
 
-final authStateProvider = StreamProvider<User>((ref) {
+final authStateProvider = StreamProvider<User?>((ref) {
   return ref.read(authRepositoryProvider).authStateChange;
 });
 
@@ -20,9 +20,9 @@ class AuthRepository {
 
   final FirebaseAuth _auth;
 
-  Stream<User> get authStateChange => _auth.idTokenChanges();
+  Stream<User?> get authStateChange => _auth.idTokenChanges();
 
-  Future<User> signInWithEmailAndPassword(String email, String password) async {
+  Future<User?> signInWithEmailAndPassword(String email, String password) async {
     try {
       final result = await _auth.signInWithEmailAndPassword(
         email: email,

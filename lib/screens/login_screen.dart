@@ -6,7 +6,7 @@ import '../models/login_state.dart';
 import '../services/auth_service.dart';
 
 class LoginScreen extends StatefulHookConsumerWidget {
-  const LoginScreen({Key key}) : super(key: key);
+  const LoginScreen({Key? key}) : super(key: key);
 
   @override
   ConsumerState<LoginScreen> createState() => _LoginScreenState();

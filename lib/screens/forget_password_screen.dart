@@ -5,7 +5,7 @@ import '../models/login_state.dart';
 import '../services/auth_service.dart';
 
 class ForgetPasswordScreen extends StatefulHookConsumerWidget {
-  const ForgetPasswordScreen({Key key}) : super(key: key);
+  const ForgetPasswordScreen({Key? key}) : super(key: key);
 
   @override
   ConsumerState<ForgetPasswordScreen> createState() => _ForgetPasswordScreenState();

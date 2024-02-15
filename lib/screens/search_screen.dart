@@ -31,7 +31,7 @@ final searchResultsProvider = Provider<List<PlaceItem>>((ref) {
 });
 
 class SearchScreen extends ConsumerStatefulWidget {
-  const SearchScreen({Key key}) : super(key: key);
+  const SearchScreen({Key? key}) : super(key: key);
 
   @override
   _SearchScreenState createState() => _SearchScreenState();

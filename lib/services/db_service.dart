@@ -13,32 +13,14 @@ import '../models/system_log.dart';
 final databaseProvider = Provider<DatabaseService>((ref) => DatabaseService());
 
 final inventoryStreamProvider = StreamProvider<List<Place>>((ref) {
-  final db = ref.watch(databaseProvider);
-
-  if (db == null) {
-    return null;
-  }
-
   return ref.watch(databaseProvider).streamPlaces();
 });
 
 final logsStreamProvider = StreamProvider<List<SystemLog>>((ref) {
-  final db = ref.watch(databaseProvider);
-
-  if (db == null) {
-    return null;
-  }
-
   return ref.watch(databaseProvider).streamLogs();
 });
 
 final inventoryProvider = FutureProvider<List<Place>>((ref) async {
-  final db = ref.watch(databaseProvider);
-
-  if (db == null) {
-    return null;
-  }
-
   return ref.watch(databaseProvider).getPlaces();
 });
 
@@ -49,24 +31,24 @@ class DatabaseService {
 
   Stream<List<Place>> streamPlaces() => _service.collectionStream(
         path: FirestorePath.places,
-        builder: (data, documentId) => Place.fromMap(<dynamic, dynamic>{...data, 'id': documentId}),
+        builder: (data, documentId) => Place.fromJson(<String, dynamic>{...data, 'id': documentId}),
       );
 
   Stream<List<SystemLog>> streamLogs() => _service.collectionStream(
         path: FirestorePath.logs,
-        builder: (data, documentId) => SystemLog.fromMap(<dynamic, dynamic>{...data}),
+        builder: (data, documentId) => SystemLog.fromJson(<String, dynamic>{...data}),
       );
 
   Future<List<Place>> getPlaces() => _service.collectionGet(
         path: FirestorePath.places,
-        builder: (data, documentId) => Place.fromMap(<dynamic, dynamic>{...data, 'id': documentId}),
+        builder: (data, documentId) => Place.fromJson(<String, dynamic>{...data, 'id': documentId}),
       );
 
   Future<void> removeItemFromPlace(Place place, Item item) {
     final placeToSave = place..items.remove(item);
     return _service.setData(
       path: '${FirestorePath.places}/${place.id}',
-      data: placeToSave.toMap(),
+      data: placeToSave.toJson(),
     );
   }
 
@@ -90,9 +72,9 @@ class DatabaseService {
   }
 
   Future<void> savePlace(Place place) =>
-      _service.setData(path: '${FirestorePath.places}/${place.id}', data: place.toMap());
+      _service.setData(path: '${FirestorePath.places}/${place.id}', data: place.toJson());
 
   Future<void> deletePlace(Place place) => _service.deleteData(path: '${FirestorePath.places}/${place.id}');
 
-  Future<void> addPlace(Place place) => _service.collectionAdd(path: FirestorePath.places, data: place.toMap());
+  Future<void> addPlace(Place place) => _service.collectionAdd(path: FirestorePath.places, data: place.toJson());
 }

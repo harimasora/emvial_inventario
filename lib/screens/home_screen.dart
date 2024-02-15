@@ -19,14 +19,14 @@ final navigatorKeysProvider = Provider<Map<TabItem, GlobalKey<NavigatorState>>>(
 });
 
 class HomeScreen extends ConsumerWidget {
-  const HomeScreen({Key key}) : super(key: key);
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final currentTab = ref.watch(homeTabProvider.state);
     final navigatorKeys = ref.watch(navigatorKeysProvider);
     return WillPopScope(
-      onWillPop: () async => !await navigatorKeys[currentTab.state].currentState.maybePop(),
+      onWillPop: () => navigatorKeys[currentTab.state]!.currentState!.maybePop(),
       child: Scaffold(
         body: Stack(
           children: [
@@ -90,7 +90,7 @@ class HomeScreen extends ConsumerWidget {
           if (routes[settings.name] == null) {
             throw Exception('Invalid route: ${settings.name}');
           }
-          return MaterialPageRoute<dynamic>(builder: routes[settings.name], settings: settings);
+          return MaterialPageRoute<dynamic>(builder: routes[settings.name]!, settings: settings);
         },
       ),
     );

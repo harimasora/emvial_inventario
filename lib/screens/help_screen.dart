@@ -8,11 +8,11 @@ final sampleReorderProvider = StateProvider<List<String>>((ref) {
 });
 
 class HelpScreen extends ConsumerWidget {
-  const HelpScreen({Key key}) : super(key: key);
+  const HelpScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final overtextStyle = Theme.of(context).textTheme.overline.copyWith(color: Theme.of(context).primaryColor);
+    final overtextStyle = Theme.of(context).textTheme.labelSmall?.copyWith(color: Theme.of(context).primaryColor);
     final sampleList = ref.watch(sampleReorderProvider.state);
     return Scaffold(
       appBar: AppBar(

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class AddPlaceScreen extends StatelessWidget {
-  const AddPlaceScreen({Key key}) : super(key: key);
+  const AddPlaceScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +26,7 @@ class AddPlaceScreen extends StatelessWidget {
 }
 
 class AddPlaceForm extends ConsumerStatefulWidget {
-  const AddPlaceForm({Key key}) : super(key: key);
+  const AddPlaceForm({Key? key}) : super(key: key);
 
   @override
   _AddPlaceFormState createState() => _AddPlaceFormState();
@@ -35,7 +35,7 @@ class AddPlaceForm extends ConsumerStatefulWidget {
 class _AddPlaceFormState extends ConsumerState<AddPlaceForm> {
   final _formKey = GlobalKey<FormState>();
 
-  String name;
+  late String name;
 
   bool _isLoading = false;
   AutovalidateMode _autoValidate = AutovalidateMode.disabled;
@@ -45,7 +45,7 @@ class _AddPlaceFormState extends ConsumerState<AddPlaceForm> {
 
   @override
   Widget build(BuildContext context) {
-    final overtextStyle = Theme.of(context).textTheme.overline.copyWith(color: Theme.of(context).primaryColor);
+    final overtextStyle = Theme.of(context).textTheme.labelSmall?.copyWith(color: Theme.of(context).primaryColor);
     return Form(
       key: _formKey,
       autovalidateMode: _autoValidate,
@@ -59,8 +59,8 @@ class _AddPlaceFormState extends ConsumerState<AddPlaceForm> {
               decoration: const InputDecoration(
                 labelText: 'Nome',
               ),
-              onSaved: (String value) {
-                name = value;
+              onSaved: (String? value) {
+                if (value != null) name = value;
               },
               textCapitalization: TextCapitalization.words,
               validator: validateName,
@@ -76,8 +76,8 @@ class _AddPlaceFormState extends ConsumerState<AddPlaceForm> {
     );
   }
 
-  String validateName(String value) {
-    if (value.isEmpty) {
+  String? validateName(String? value) {
+    if (value?.isEmpty == true) {
       return 'Insira um nome';
     }
 
@@ -87,14 +87,14 @@ class _AddPlaceFormState extends ConsumerState<AddPlaceForm> {
   Future<void> _validateInputs() async {
     final form = _formKey.currentState;
     FocusScope.of(context).requestFocus(FocusNode());
-    if (form.validate()) {
+    if (form?.validate() != null) {
       // Text forms was validated.
-      form.save();
+      form?.save();
       try {
         startLoading();
         final db = ref.read(databaseProvider);
         final map = {'name': name};
-        await db.addPlace(Place.fromMap(map));
+        await db.addPlace(Place.fromJson(map));
         Navigator.of(context).pop();
       } on Exception catch (e) {
         debugPrint(e.toString());

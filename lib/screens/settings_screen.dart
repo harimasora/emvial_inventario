@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class SettingsScreen extends HookConsumerWidget {
-  const SettingsScreen({Key key}) : super(key: key);
+  const SettingsScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -40,7 +40,7 @@ class SettingsScreen extends HookConsumerWidget {
 }
 
 class CurrentUser extends ConsumerWidget {
-  const CurrentUser({Key key}) : super(key: key);
+  const CurrentUser({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -48,10 +48,10 @@ class CurrentUser extends ConsumerWidget {
 
     return user.when(
       data: (user) {
-        if (user == null) {
-          return const Text('Erro ao fazer login. Tente sair e fazer login novamente.');
+        if ((user?.displayName ?? user?.email) != null) {
+          return Text('Logado como ${user?.displayName ?? user?.email}');
         }
-        return Text('Logado como ${user?.displayName ?? user?.email}');
+        return const Text('Logado como Anônimo');
       },
       error: (err, __) {
         return Column(

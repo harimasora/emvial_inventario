@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ToolsScreen extends ConsumerWidget {
   final String placeId;
-  const ToolsScreen({@required this.placeId, Key key}) : super(key: key);
+  const ToolsScreen({Key? key, required this.placeId}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -38,7 +38,7 @@ class ToolsScreen extends ConsumerWidget {
               itemBuilder: (context, index) {
                 return ListTile(
                   title: Text(
-                    place.items[index].name ?? '',
+                    place.items[index].name,
                   ),
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () {

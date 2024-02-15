@@ -8,7 +8,7 @@ import '../services/logger_service.dart';
 
 class EditPlaceScreen extends StatelessWidget {
   final Place place;
-  const EditPlaceScreen({@required this.place, Key key}) : super(key: key);
+  const EditPlaceScreen({Key? key, required this.place}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +30,7 @@ class EditPlaceScreen extends StatelessWidget {
 
 class EditPlaceForm extends ConsumerStatefulWidget {
   final Place place;
-  const EditPlaceForm({@required this.place, Key key}) : super(key: key);
+  const EditPlaceForm({Key? key, required this.place}) : super(key: key);
 
   @override
   _EditPlaceFormState createState() => _EditPlaceFormState();
@@ -39,7 +39,7 @@ class EditPlaceForm extends ConsumerStatefulWidget {
 class _EditPlaceFormState extends ConsumerState<EditPlaceForm> {
   final _formKey = GlobalKey<FormState>();
 
-  String name;
+  late String name;
 
   bool _isLoading = false;
   AutovalidateMode _autoValidate = AutovalidateMode.disabled;
@@ -55,7 +55,7 @@ class _EditPlaceFormState extends ConsumerState<EditPlaceForm> {
 
   @override
   Widget build(BuildContext context) {
-    final overtextStyle = Theme.of(context).textTheme.overline.copyWith(color: Theme.of(context).primaryColor);
+    final overtextStyle = Theme.of(context).textTheme.labelSmall?.copyWith(color: Theme.of(context).primaryColor);
     return Form(
       key: _formKey,
       autovalidateMode: _autoValidate,
@@ -69,10 +69,10 @@ class _EditPlaceFormState extends ConsumerState<EditPlaceForm> {
               decoration: const InputDecoration(
                 labelText: 'Nome',
               ),
-              onSaved: (String value) {
-                name = value;
+              onSaved: (String? value) {
+                if (value != null) name = value;
               },
-              initialValue: name ?? '',
+              initialValue: name,
               textCapitalization: TextCapitalization.words,
               validator: validateName,
             ),
@@ -87,8 +87,8 @@ class _EditPlaceFormState extends ConsumerState<EditPlaceForm> {
     );
   }
 
-  String validateName(String value) {
-    if (value.isEmpty) {
+  String? validateName(String? value) {
+    if (value?.isEmpty == true) {
       return 'Insira um nome';
     }
 
@@ -98,9 +98,9 @@ class _EditPlaceFormState extends ConsumerState<EditPlaceForm> {
   Future<void> _validateInputs() async {
     final form = _formKey.currentState;
     FocusScope.of(context).requestFocus(FocusNode());
-    if (form.validate()) {
+    if (form?.validate() == true) {
       // Text forms was validated.
-      form.save();
+      form?.save();
       try {
         startLoading();
         final db = ref.read(databaseProvider);

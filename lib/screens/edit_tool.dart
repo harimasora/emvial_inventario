@@ -14,7 +14,7 @@ class EditToolScreen extends ConsumerWidget {
   final Item item;
   final Place place;
   final List<Place> places;
-  const EditToolScreen({@required this.item, @required this.place, @required this.places, Key key}) : super(key: key);
+  const EditToolScreen({Key? key, required this.item, required this.place, required this.places}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -27,7 +27,7 @@ class EditToolScreen extends ConsumerWidget {
             onPressed: () async {
               final isDelete = await NotificationService.confirm(
                   context, 'Apagar', 'Tem certeza que deseja apagar esta ferramenta?');
-              if (isDelete) {
+              if (isDelete == true) {
                 final db = ref.read(databaseProvider);
                 final Place origin = place;
                 final originToSave = Place(id: origin.id, name: origin.name, items: origin.items)..items.remove(item);
@@ -55,7 +55,7 @@ class EditToolForm extends ConsumerStatefulWidget {
   final Item item;
   final Place place;
   final List<Place> places;
-  const EditToolForm({@required this.item, @required this.place, @required this.places, Key key}) : super(key: key);
+  const EditToolForm({Key? key, required this.item, required this.place, required this.places}) : super(key: key);
 
   @override
   _EditToolFormState createState() => _EditToolFormState();
@@ -64,9 +64,9 @@ class EditToolForm extends ConsumerStatefulWidget {
 class _EditToolFormState extends ConsumerState<EditToolForm> {
   final _formKey = GlobalKey<FormState>();
 
-  String name;
-  Place place;
-  PlaceItem placeItem;
+  late String name;
+  late Place place;
+  late PlaceItem placeItem;
 
   bool _isLoading = false;
   AutovalidateMode _autoValidate = AutovalidateMode.disabled;
@@ -77,14 +77,14 @@ class _EditToolFormState extends ConsumerState<EditToolForm> {
   @override
   void initState() {
     super.initState();
-    name = widget.item?.name;
+    name = widget.item.name;
     place = widget.place;
     placeItem = PlaceItem(place: widget.place, item: widget.item);
   }
 
   @override
   Widget build(BuildContext context) {
-    final overtextStyle = Theme.of(context).textTheme.overline.copyWith(color: Theme.of(context).primaryColor);
+    final overtextStyle = Theme.of(context).textTheme.labelSmall?.copyWith(color: Theme.of(context).primaryColor);
     final List<Place> places = widget.places;
     places.sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
     return Form(
@@ -113,10 +113,10 @@ class _EditToolFormState extends ConsumerState<EditToolForm> {
               decoration: const InputDecoration(
                 labelText: 'Nome',
               ),
-              onSaved: (String value) {
-                name = value;
+              onSaved: (String? value) {
+                if (value != null) name = value;
               },
-              initialValue: name ?? '',
+              initialValue: name,
               textCapitalization: TextCapitalization.words,
               validator: _validateName,
             ),
@@ -133,10 +133,12 @@ class _EditToolFormState extends ConsumerState<EditToolForm> {
                         child: Text(e.name),
                       ))
                   .toList(),
-              onChanged: (Place value) {
-                setState(() {
-                  place = value;
-                });
+              onChanged: (Place? value) {
+                if (value != null) {
+                  setState(() {
+                    place = value;
+                  });
+                }
               },
               validator: _validatePlace,
             ),
@@ -151,15 +153,15 @@ class _EditToolFormState extends ConsumerState<EditToolForm> {
     );
   }
 
-  String _validateName(String value) {
-    if (value.isEmpty) {
+  String? _validateName(String? value) {
+    if (value?.isEmpty == true) {
       return 'Insira um nome';
     }
 
     return null;
   }
 
-  String _validatePlace(Place value) {
+  String? _validatePlace(Place? value) {
     if (value == null) {
       return 'Insira um local';
     }
@@ -170,8 +172,8 @@ class _EditToolFormState extends ConsumerState<EditToolForm> {
   Future<void> _validateInputs() async {
     final form = _formKey.currentState;
     FocusScope.of(context).requestFocus(FocusNode());
-    if (form.validate()) {
-      form.save();
+    if (form?.validate() == true) {
+      form?.save();
       try {
         startLoading();
         final db = ref.read(databaseProvider);
@@ -181,13 +183,14 @@ class _EditToolFormState extends ConsumerState<EditToolForm> {
         if (origin.id == destination.id) {
           final destinationToSave = Place(id: destination.id, name: destination.name, items: destination.items)
             ..items.removeWhere((item) => item.id == placeItem.item.id)
-            ..items.add((placeItem.item.copyWith(name: name)));
+            ..items.add(placeItem.item.copyWith(name: name));
           await db.savePlace(destinationToSave);
           await LoggerService().logEditItem(placeItem.item.copyWith(name: name), origin);
         } else {
-          final originToSave = Place(id: origin.id, name: origin.name, items: origin.items)..items.remove(widget.item);
+          final originToSave = Place(id: origin.id, name: origin.name, items: origin.items)
+              .copyWith(items: [...origin.items]..remove(widget.item));
           final destinationToSave = Place(id: destination.id, name: destination.name, items: destination.items)
-            ..items.add((placeItem.item.copyWith(name: name)));
+              .copyWith(items: [...destination.items, placeItem.item.copyWith(name: name)]);
           await Future.wait([
             db.savePlace(originToSave),
             db.savePlace(destinationToSave),
@@ -207,7 +210,7 @@ class _EditToolFormState extends ConsumerState<EditToolForm> {
 
   Future<void> _deleteImage() async {
     final isDelete = await NotificationService.confirm(context, 'Apagar', 'Tem certeza que deseja apagar esta imagem?');
-    if (isDelete) {
+    if (isDelete == true) {
       final db = ref.read(databaseProvider);
       db.deleteImage(PlaceItem(place: widget.place, item: widget.item));
       setState(() {

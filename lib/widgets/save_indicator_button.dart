@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class SaveIndicatorButton extends StatelessWidget {
-  const SaveIndicatorButton({@required this.isLoading, @required this.onPressed, Key key}) : super(key: key);
+  const SaveIndicatorButton({Key? key, required this.isLoading, required this.onPressed}) : super(key: key);
   final void Function() onPressed;
   final bool isLoading;
 
@@ -30,7 +30,7 @@ class SaveIndicatorButton extends StatelessWidget {
               height: 24,
               child: Text(
                 'SALVAR',
-                style: Theme.of(context).textTheme.button.merge(
+                style: Theme.of(context).textTheme.labelLarge?.merge(
                       const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,

@@ -1,38 +1,11 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class LoginState extends Equatable {
-  const LoginState();
+part 'login_state.freezed.dart';
 
-  @override
-  List<Object> get props => [];
-}
-
-class LoginStateInitial extends LoginState {
-  const LoginStateInitial();
-
-  @override
-  List<Object> get props => [];
-}
-
-class LoginStateLoading extends LoginState {
-  const LoginStateLoading();
-
-  @override
-  List<Object> get props => [];
-}
-
-class LoginStateSuccess extends LoginState {
-  const LoginStateSuccess();
-
-  @override
-  List<Object> get props => [];
-}
-
-class LoginStateError extends LoginState {
-  final String error;
-
-  const LoginStateError(this.error);
-
-  @override
-  List<Object> get props => [error];
+@freezed
+class LoginState with _$LoginState {
+  const factory LoginState.initial() = LoginStateInitial;
+  const factory LoginState.loading() = LoginStateLoading;
+  const factory LoginState.success() = LoginStateSuccess;
+  const factory LoginState.error(String error) = LoginStateError;
 }

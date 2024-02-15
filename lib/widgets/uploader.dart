@@ -8,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class Uploader extends ConsumerStatefulWidget {
   final File file;
   final PlaceItem placeItem;
-  const Uploader({@required this.file, @required this.placeItem, Key key}) : super(key: key);
+  const Uploader({Key? key, required this.file, required this.placeItem}) : super(key: key);
 
   @override
   _UploaderState createState() => _UploaderState();
@@ -17,7 +17,7 @@ class Uploader extends ConsumerStatefulWidget {
 class _UploaderState extends ConsumerState<Uploader> {
   final FirebaseStorage _storage = FirebaseStorage.instance;
 
-  UploadTask _task;
+  UploadTask? _task;
 
   /// Starts an upload task
   void _startUpload() {
@@ -27,9 +27,9 @@ class _UploaderState extends ConsumerState<Uploader> {
     setState(() {
       // TODO: Fix upload
       _task = _storage.ref().child(filePath).putFile(widget.file);
-      _task.whenComplete(() async {
-        final downloadUrl = await _task.snapshot.ref.getDownloadURL();
-        final newItem = widget.placeItem.item.copyWith(imageUrl: downloadUrl);
+      _task?.whenComplete(() async {
+        final downloadUrl = await _task?.snapshot.ref.getDownloadURL();
+        final newItem = widget.placeItem.item.copyWith(imageUrl: downloadUrl!);
         final db = ref.read(databaseProvider);
         db.savePlaceItem(PlaceItem(place: widget.placeItem.place, item: newItem));
         Navigator.of(context).pop(downloadUrl);
@@ -42,10 +42,10 @@ class _UploaderState extends ConsumerState<Uploader> {
     if (_task != null) {
       /// Manage the task state and event subscription with a StreamBuilder
       return StreamBuilder<TaskSnapshot>(
-          stream: _task.snapshotEvents,
+          stream: _task!.snapshotEvents,
           builder: (_, asyncSnapshot) {
-            final TaskSnapshot snapshot = asyncSnapshot.data;
-            final TaskState state = snapshot?.state;
+            final TaskSnapshot? snapshot = asyncSnapshot.data;
+            final TaskState? state = snapshot?.state;
 
             final double progressPercent = snapshot != null ? snapshot.bytesTransferred / snapshot.totalBytes : 0;
 
@@ -55,13 +55,13 @@ class _UploaderState extends ConsumerState<Uploader> {
 
                 if (state == TaskState.paused)
                   TextButton(
-                    onPressed: _task.resume,
+                    onPressed: _task!.resume,
                     child: const Icon(Icons.play_arrow),
                   ),
 
                 if (state == TaskState.running)
                   TextButton(
-                    onPressed: _task.pause,
+                    onPressed: _task!.pause,
                     child: const Icon(Icons.pause),
                   ),
 

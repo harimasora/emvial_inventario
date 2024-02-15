@@ -5,14 +5,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vector_math/vector_math.dart' show radians;
 
 class RadialFab extends ConsumerStatefulWidget {
-  const RadialFab({Key key}) : super(key: key);
+  const RadialFab({Key? key}) : super(key: key);
 
   @override
   _RadialFabState createState() => _RadialFabState();
 }
 
 class _RadialFabState extends ConsumerState<RadialFab> with SingleTickerProviderStateMixin {
-  AnimationController controller;
+  late AnimationController controller;
 
   @override
   void initState() {
@@ -30,8 +30,8 @@ class RadialAnimation extends ConsumerWidget {
   final AnimationController controller;
   final Animation<double> degOneTranslationAnimation, degTwoTranslationAnimation, degThreeTranslationAnimation;
   final Animation<double> rotationAnimation;
-  final Animation<Color> colorAnimation;
-  RadialAnimation({Key key, this.controller})
+  final Animation<Color?> colorAnimation;
+  RadialAnimation({Key? key, required this.controller})
       : degOneTranslationAnimation = TweenSequence([
           TweenSequenceItem<double>(tween: Tween<double>(begin: 0.0, end: 1.2), weight: 75.0),
           TweenSequenceItem<double>(tween: Tween<double>(begin: 1.2, end: 1.0), weight: 25.0),
@@ -148,11 +148,12 @@ class RadialAnimation extends ConsumerWidget {
 class CircularButton extends StatelessWidget {
   final double width;
   final double height;
-  final Color color;
+  final Color? color;
   final Icon icon;
   final void Function() onClick;
 
-  const CircularButton({this.color, this.width, this.height, this.icon, this.onClick});
+  const CircularButton(
+      {required this.color, required this.width, required this.height, required this.icon, required this.onClick});
 
   @override
   Widget build(BuildContext context) {

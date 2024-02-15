@@ -11,7 +11,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class AddToolScreen extends StatelessWidget {
   final Place place;
-  const AddToolScreen({@required this.place, Key key}) : super(key: key);
+  const AddToolScreen({Key? key, required this.place}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +33,7 @@ class AddToolScreen extends StatelessWidget {
 
 class AddToolForm extends ConsumerStatefulWidget {
   final Place place;
-  const AddToolForm({@required this.place, Key key}) : super(key: key);
+  const AddToolForm({Key? key, required this.place}) : super(key: key);
 
   @override
   _AddToolFormState createState() => _AddToolFormState();
@@ -42,9 +42,9 @@ class AddToolForm extends ConsumerStatefulWidget {
 class _AddToolFormState extends ConsumerState<AddToolForm> {
   final _formKey = GlobalKey<FormState>();
 
-  String name;
-  Place place;
-  PlaceItem placeItem;
+  late String name;
+  late Place place;
+  late PlaceItem placeItem;
 
   bool _isLoading = false;
   AutovalidateMode _autoValidate = AutovalidateMode.disabled;
@@ -57,12 +57,12 @@ class _AddToolFormState extends ConsumerState<AddToolForm> {
     super.initState();
     final db = ref.read(databaseProvider);
     place = widget.place;
-    placeItem = PlaceItem(place: widget.place, item: Item(id: db.randomDocumentId, imageUrl: ''));
+    placeItem = PlaceItem(place: widget.place, item: Item(id: db.randomDocumentId));
   }
 
   @override
   Widget build(BuildContext context) {
-    final overtextStyle = Theme.of(context).textTheme.overline.copyWith(color: Theme.of(context).primaryColor);
+    final overtextStyle = Theme.of(context).textTheme.labelSmall?.copyWith(color: Theme.of(context).primaryColor);
     return Form(
       key: _formKey,
       autovalidateMode: _autoValidate,
@@ -89,8 +89,10 @@ class _AddToolFormState extends ConsumerState<AddToolForm> {
               decoration: const InputDecoration(
                 labelText: 'Nome',
               ),
-              onSaved: (String value) {
-                name = value;
+              onSaved: (String? value) {
+                if (value != null) {
+                  name = value;
+                }
               },
               textCapitalization: TextCapitalization.words,
               validator: _validateName,
@@ -110,8 +112,8 @@ class _AddToolFormState extends ConsumerState<AddToolForm> {
     );
   }
 
-  String _validateName(String value) {
-    if (value.isEmpty) {
+  String? _validateName(String? value) {
+    if (value?.isEmpty == true) {
       return 'Insira um nome';
     }
 
@@ -121,8 +123,8 @@ class _AddToolFormState extends ConsumerState<AddToolForm> {
   Future<void> _validateInputs() async {
     final form = _formKey.currentState;
     FocusScope.of(context).requestFocus(FocusNode());
-    if (form.validate()) {
-      form.save();
+    if (form?.validate() == true) {
+      form?.save();
       try {
         startLoading();
         final db = ref.read(databaseProvider);
@@ -144,7 +146,7 @@ class _AddToolFormState extends ConsumerState<AddToolForm> {
 
   Future<void> _deleteImage() async {
     final isDelete = await NotificationService.confirm(context, 'Apagar', 'Tem certeza que deseja apagar esta imagem?');
-    if (isDelete) {
+    if (isDelete == true) {
       final db = ref.read(databaseProvider);
       db.deleteImage(PlaceItem(place: widget.place, item: placeItem.item));
       setState(() {

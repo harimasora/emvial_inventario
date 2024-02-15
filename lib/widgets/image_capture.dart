@@ -9,7 +9,7 @@ import 'package:image_picker/image_picker.dart';
 
 class ImageCapture extends StatefulWidget {
   final PlaceItem placeItem;
-  const ImageCapture({@required this.placeItem, Key key}) : super(key: key);
+  const ImageCapture({Key? key, required this.placeItem}) : super(key: key);
 
   @override
   _ImageCaptureState createState() => _ImageCaptureState();
@@ -17,13 +17,13 @@ class ImageCapture extends StatefulWidget {
 
 class _ImageCaptureState extends State<ImageCapture> {
   /// Active image file
-  File _imageFile;
+  File? _imageFile;
   final _picker = ImagePicker();
 
   /// Cropper plugin
   Future<void> _cropImage() async {
     final cropped = await ImageCropper().cropImage(
-      sourcePath: _imageFile.path,
+      sourcePath: _imageFile?.path ?? '',
       aspectRatio: const CropAspectRatio(ratioX: 1.0, ratioY: 1.0),
       maxWidth: 1024,
       maxHeight: 1024,
@@ -40,7 +40,7 @@ class _ImageCaptureState extends State<ImageCapture> {
     );
 
     setState(() {
-      _imageFile = File(cropped.path) ?? _imageFile;
+      _imageFile = cropped?.path != null ? File(cropped!.path) : _imageFile;
     });
   }
 
@@ -90,7 +90,7 @@ class _ImageCaptureState extends State<ImageCapture> {
           ),
           // Preview the image and crop it
           if (_imageFile != null) ...[
-            if (kIsWeb) HtmlElementView(viewType: _imageFile.path) else Image.file(_imageFile),
+            if (kIsWeb) HtmlElementView(viewType: _imageFile!.path) else Image.file(_imageFile!),
             Row(
               children: <Widget>[
                 TextButton(
@@ -104,7 +104,7 @@ class _ImageCaptureState extends State<ImageCapture> {
               ],
             ),
             Uploader(
-              file: _imageFile,
+              file: _imageFile!,
               placeItem: widget.placeItem,
             )
           ]

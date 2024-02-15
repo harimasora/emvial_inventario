@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
+// ignore: avoid_classes_with_only_static_members
 class NotificationService {
-  static Future<bool> confirm(BuildContext context, String title, String body, [String deleteLabel]) async {
+  static Future<bool?> confirm(BuildContext context, String title, String body, [String? deleteLabel]) async {
     return showDialog(
       context: context,
       barrierDismissible: true,
@@ -19,7 +20,7 @@ class NotificationService {
             ),
             TextButton(
               style: TextButton.styleFrom(
-                backgroundColor: Theme.of(innerContext).errorColor,
+                backgroundColor: Theme.of(innerContext).colorScheme.error,
               ),
               onPressed: () => Navigator.of(innerContext).pop(true),
               child: Text(deleteLabel ?? 'Apagar', style: const TextStyle(color: Colors.white)),
