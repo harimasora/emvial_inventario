@@ -25,19 +25,19 @@ dependencies:
     sdk: flutter
 
   # State Management
-  riverpod: ^2.5.0
-  flutter_riverpod: ^2.4.10
-  hooks_riverpod: ^2.4.10
+  riverpod: ^2.5.1
+  flutter_riverpod: ^2.5.1
+  hooks_riverpod: ^2.5.1
 
   # Equality
   freezed_annotation: ^2.4.1
   json_annotation: ^4.8.1
 
   # Firebase
-  cloud_firestore: ^4.15.4
-  firebase_core: ^2.25.4
-  firebase_storage: ^11.6.5
-  firebase_auth: ^4.17.4
+  cloud_firestore: ^4.15.8
+  firebase_core: ^2.27.0
+  firebase_storage: ^11.6.9
+  firebase_auth: ^4.17.8
 
   # Drag & Drop
   drag_and_drop_lists: ^0.3.3

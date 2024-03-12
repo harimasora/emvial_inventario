@@ -128,9 +128,13 @@ class _AddToolFormState extends ConsumerState<AddToolForm> {
       try {
         startLoading();
         final db = ref.read(databaseProvider);
-        final placeToSave = Place(id: place.id, name: place.name, items: place.items);
-        placeToSave.items.removeWhere((item) => item.id == placeItem.item.id);
-        placeToSave.items.add(placeItem.item.copyWith(name: name));
+        final placeToSave = Place(
+          id: place.id,
+          name: place.name,
+          items: [...place.items]
+            ..removeWhere((item) => item.id == placeItem.item.id)
+            ..add(placeItem.item.copyWith(name: name)),
+        );
         await db.savePlace(placeToSave);
         await LoggerService().logAddItem(placeItem.item.copyWith(name: name), placeToSave);
         Navigator.of(context).pop();

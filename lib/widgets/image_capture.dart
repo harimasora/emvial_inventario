@@ -73,7 +73,7 @@ class _ImageCaptureState extends State<ImageCapture> {
       appBar: AppBar(
         title: const Text('Upload de imagem'),
       ),
-      body: ListView(
+      body: Column(
         children: <Widget>[
           // Select an image from the camera or gallery
           Row(
@@ -90,7 +90,7 @@ class _ImageCaptureState extends State<ImageCapture> {
           ),
           // Preview the image and crop it
           if (_imageFile != null) ...[
-            if (kIsWeb) HtmlElementView(viewType: _imageFile!.path) else Image.file(_imageFile!),
+            if (kIsWeb) Image.network(_imageFile!.path) else Image.file(_imageFile!),
             Row(
               children: <Widget>[
                 TextButton(

@@ -30,7 +30,11 @@ class EditToolScreen extends ConsumerWidget {
               if (isDelete == true) {
                 final db = ref.read(databaseProvider);
                 final Place origin = place;
-                final originToSave = Place(id: origin.id, name: origin.name, items: origin.items)..items.remove(item);
+                final originToSave = Place(
+                  id: origin.id,
+                  name: origin.name,
+                  items: [...origin.items]..remove(item),
+                );
                 await db.savePlace(originToSave);
                 await LoggerService().logRemoveItem(item, origin);
                 Navigator.of(context).pop();
@@ -181,16 +185,26 @@ class _EditToolFormState extends ConsumerState<EditToolForm> {
         final Place origin = widget.place;
         final Place destination = place;
         if (origin.id == destination.id) {
-          final destinationToSave = Place(id: destination.id, name: destination.name, items: destination.items)
-            ..items.removeWhere((item) => item.id == placeItem.item.id)
-            ..items.add(placeItem.item.copyWith(name: name));
+          final destinationToSave = Place(
+            id: destination.id,
+            name: destination.name,
+            items: [...destination.items]
+              ..removeWhere((item) => item.id == placeItem.item.id)
+              ..add(placeItem.item.copyWith(name: name)),
+          );
           await db.savePlace(destinationToSave);
           await LoggerService().logEditItem(placeItem.item.copyWith(name: name), origin);
         } else {
-          final originToSave = Place(id: origin.id, name: origin.name, items: origin.items)
-              .copyWith(items: [...origin.items]..remove(widget.item));
-          final destinationToSave = Place(id: destination.id, name: destination.name, items: destination.items)
-              .copyWith(items: [...destination.items, placeItem.item.copyWith(name: name)]);
+          final originToSave = Place(
+            id: origin.id,
+            name: origin.name,
+            items: [...origin.items]..remove(widget.item),
+          );
+          final destinationToSave = Place(
+            id: destination.id,
+            name: destination.name,
+            items: [...destination.items, placeItem.item.copyWith(name: name)],
+          );
           await Future.wait([
             db.savePlace(originToSave),
             db.savePlace(destinationToSave),

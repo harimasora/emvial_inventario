@@ -4,7 +4,6 @@ import 'package:emival_inventario/screens/edit_place.dart';
 import 'package:emival_inventario/screens/edit_tool.dart';
 import 'package:emival_inventario/screens/help_screen.dart';
 import 'package:emival_inventario/services/db_service.dart';
-import 'package:emival_inventario/widgets/radial_fab.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -193,7 +192,6 @@ class InventoryScreen extends ConsumerWidget {
           ),
         ],
       ),
-      floatingActionButton: const RadialFab(),
     );
   }
 }
