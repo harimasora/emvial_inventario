@@ -37,6 +37,7 @@ class DatabaseService {
   Stream<List<SystemLog>> streamLogs() => _service.collectionStream(
         path: FirestorePath.logs,
         builder: (data, documentId) => SystemLog.fromJson(<String, dynamic>{...data}),
+        queryBuilder: (query) => query.orderBy('timestamp', descending: true),
       );
 
   Future<List<Place>> getPlaces() => _service.collectionGet(

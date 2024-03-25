@@ -12,16 +12,13 @@ class LogsScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Registros')),
       body: logsStream.when(
-        data: (logs) {
-          logs.sort((a, b) => b.timestamp.compareTo(a.timestamp));
-          return ListView.separated(
-            itemCount: logs.length,
-            itemBuilder: (context, index) => ListTile(
-              title: Text(logs[index].text),
-            ),
-            separatorBuilder: (context, index) => const Divider(),
-          );
-        },
+        data: (logs) => ListView.separated(
+          itemCount: logs.length,
+          itemBuilder: (context, index) => ListTile(
+            title: Text(logs[index].text),
+          ),
+          separatorBuilder: (context, index) => const Divider(),
+        ),
         error: (err, _) {
           return Column(
             children: [
