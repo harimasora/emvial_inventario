@@ -54,6 +54,7 @@ class ToolHistoryScreen extends ConsumerWidget {
                 ),
               ),
               Expanded(
+                flex: 3,
                 child: ListView.separated(
                   itemCount: data.logs.length,
                   itemBuilder: (context, index) {
