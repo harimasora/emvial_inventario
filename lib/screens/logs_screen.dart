@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../services/db_service.dart';
+import 'tool_history_screen.dart';
 
 class LogsScreen extends ConsumerWidget {
   const LogsScreen({Key? key}) : super(key: key);
@@ -16,6 +17,13 @@ class LogsScreen extends ConsumerWidget {
           itemCount: logs.length,
           itemBuilder: (context, index) => ListTile(
             title: Text(logs[index].text),
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => ToolHistoryScreen(
+                  itemId: logs[index].itemId,
+                ),
+              ),
+            ),
           ),
           separatorBuilder: (context, index) => const Divider(),
         ),

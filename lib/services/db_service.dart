@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:emival_inventario/constants/firestore_path.dart';
 import 'package:emival_inventario/models/item.dart';
+import 'package:emival_inventario/models/item_history.dart';
 import 'package:emival_inventario/models/place.dart';
 import 'package:emival_inventario/models/place_item.dart';
 import 'package:emival_inventario/services/firestore_service.dart';
@@ -24,6 +25,12 @@ final inventoryProvider = FutureProvider<List<Place>>((ref) async {
   return ref.watch(databaseProvider).getPlaces();
 });
 
+final itemHistoryProvider = FutureProvider.autoDispose.family<ItemHistory, String>((ref, itemId) async {
+  return ref.watch(databaseProvider).getItemHistory(itemId);
+});
+
+final FirebaseStorage _storage = FirebaseStorage.instanceFor(bucket: 'gs://emival-engenharia-inventario.appspot.com');
+
 class DatabaseService {
   final _service = FirestoreService.instance;
 
@@ -45,6 +52,18 @@ class DatabaseService {
         builder: (data, documentId) => Place.fromJson(<String, dynamic>{...data, 'id': documentId}),
       );
 
+  Future<ItemHistory> getItemHistory(String itemId) async {
+    final logs = await _service.collectionGet(
+      path: FirestorePath.logs,
+      queryBuilder: (query) => query.where('itemId', isEqualTo: itemId).orderBy('timestamp', descending: true),
+      builder: (data, documentId) => SystemLog.fromJson(<String, dynamic>{...data, 'id': documentId}),
+    );
+
+    final imageUrl = await _storage.ref().child('tools/$itemId.png').getDownloadURL();
+
+    return ItemHistory(imageUrl: imageUrl, logs: logs);
+  }
+
   Future<void> removeItemFromPlace(Place place, Item item) {
     final placeToSave = place..items.remove(item);
     return _service.setData(
@@ -63,9 +82,6 @@ class DatabaseService {
   }
 
   Future<void> deleteImage(PlaceItem placeItem) {
-    final FirebaseStorage _storage =
-        FirebaseStorage.instanceFor(bucket: 'gs://emival-engenharia-inventario.appspot.com');
-
     return Future.wait([
       _storage.ref().child('tools/${placeItem.item.id}.png').delete(),
       savePlaceItem(PlaceItem(place: placeItem.place, item: placeItem.item.copyWith(imageUrl: ''))),
