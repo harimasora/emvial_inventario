@@ -20,11 +20,14 @@ class LogsScreen extends ConsumerWidget {
           separatorBuilder: (context, index) => const Divider(),
         ),
         error: (err, _) {
-          return Column(
-            children: [
-              const Text('Ocorreu um erro ao carregar os registros.'),
-              Text(err.toString()),
-            ],
+          return Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text('Ocorreu um erro ao carregar os registros.'),
+                Text(err.toString()),
+              ],
+            ),
           );
         },
         loading: () {
